@@ -14,6 +14,7 @@ import io.ktor.jackson.jackson
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.routing
 import kotlinx.css.*
 
@@ -41,13 +42,24 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        // Static feature. Try to access `/static/ktor_logo.svg`
         static("/static") {
             resources("static")
         }
 
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
+        post("/start") {
+            call.respond(mapOf("message" to "Starting Game"))
+        }
+
+        get("/game") {
+            call.respond(mapOf("message" to "Fetching Game"))
+        }
+
+        post("/guess") {
+            call.respond(mapOf("message" to "Making Guess"))
+        }
+
+        post("/forfeit") {
+            call.respond(mapOf("message" to "Forfeiting Game"))
         }
     }
 }
