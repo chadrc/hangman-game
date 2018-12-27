@@ -1,5 +1,6 @@
 
 .idea
+*.iml
 
 ### Kotlin template
 # Compiled class file
