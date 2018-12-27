@@ -1,18 +1,22 @@
 package com.chadrc.hangman
 
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.html.*
-import kotlinx.html.*
+import com.fasterxml.jackson.databind.SerializationFeature
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.ContentNegotiation
+import io.ktor.html.respondHtml
+import io.ktor.http.ContentType
+import io.ktor.http.content.resources
+import io.ktor.http.content.static
+import io.ktor.jackson.jackson
+import io.ktor.response.respond
+import io.ktor.response.respondText
+import io.ktor.routing.get
+import io.ktor.routing.routing
 import kotlinx.css.*
-import io.ktor.content.*
-import io.ktor.http.content.*
-import com.fasterxml.jackson.databind.*
-import io.ktor.jackson.*
-import io.ktor.features.*
+import kotlinx.html.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 
