@@ -49,7 +49,7 @@ dependencies {
 }
 
 task copyClientJs(type: Copy) {
-    from "../hangman-web-client/build/web"
+    from "../hangman-web-client/build/kotlin-js-min/main"
     into "resources/static/js"
 }
 

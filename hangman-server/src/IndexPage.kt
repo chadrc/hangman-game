@@ -16,9 +16,9 @@ fun HTML.indexPage() {
             type = "text/css"
         }
 
-        scriptAsset("libs/kotlin")
-        scriptAsset("libs/hangman-common")
-        scriptAsset("client")
+        scriptAsset("kotlin")
+        scriptAsset("hangman-common")
+        scriptAsset("main")
     }
 
     body {
