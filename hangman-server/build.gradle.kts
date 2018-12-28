@@ -33,6 +33,11 @@ dependencies {
     compile("org.jetbrains:kotlin-css-jvm:1.0.0-pre.31-kotlin-1.2.41")
     compile("io.ktor:ktor-server-host-common:$ktor_version")
     compile("io.ktor:ktor-jackson:$ktor_version")
+    compile("io.ktor:ktor-webjars:$ktor_version")
+
+    // From common module
+    compile(files("../hangman-common/build/libs/hangman-common-jvm-0.0.1.jar"))
+
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
 }
 
