@@ -18,12 +18,13 @@ apply plugin: 'kotlin2js'
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
 
-    compile(files("../hangman-common/build/libs/hangman-common-js-0.0.1.jar"))
+    compile "com.chadrc.hangman.common:hangman-common-js:0.0.1"
 }
 
 task assembleWeb(type: Sync) {
@@ -45,7 +46,7 @@ task assembleWeb(type: Sync) {
 
 assemble.dependsOn assembleWeb
 
-compileJava.dependsOn ":hangman-common:build"
+compileJava.dependsOn ":hangman-common:publishToMavenLocal"
 
 compileKotlin2Js {
     kotlinOptions.outputFile = "${projectDir}/build/web/client.js"

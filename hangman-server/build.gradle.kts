@@ -36,7 +36,7 @@ dependencies {
     compile("io.ktor:ktor-webjars:$ktor_version")
 
     // From common module
-    compile(files("../hangman-common/build/libs/hangman-common-jvm-0.0.1.jar"))
+    compile("com.chadrc.hangman.common:hangman-common-jvm:0.0.1")
 
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
 }
