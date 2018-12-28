@@ -45,6 +45,8 @@ task assembleWeb(type: Sync) {
 
 assemble.dependsOn assembleWeb
 
+compileJava.dependsOn ":hangman-common:build"
+
 compileKotlin2Js {
     kotlinOptions.outputFile = "${projectDir}/build/web/client.js"
     kotlinOptions.moduleKind = "plain"
