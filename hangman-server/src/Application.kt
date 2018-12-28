@@ -50,7 +50,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        static("/static") {
+        static("/assets") {
             resources("static")
         }
 

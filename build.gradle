@@ -1,0 +1,19 @@
+group = "com.hangman"
+version = "1.0-SNAPSHOT"
+
+task copyClientJs(type: Copy) {
+    from "${projectDir}/hangman-web-client/build/web"
+    into "${projectDir}/hangman-server/resources/static/js"
+}
+
+copyClientJs.dependsOn(":hangman-web-client:build")
+
+task deleteClientJs(type: Delete) {
+    setDelete "${projectDir}/hangman-server/resources/static/js"
+}
+
+task clean {
+
+}
+
+clean.dependsOn deleteClientJs
