@@ -56,7 +56,7 @@ task copyClientJs(type: Copy) {
 copyClientJs.dependsOn(":hangman-web-client:build")
 
 task deleteClientJs(type: Delete) {
-    setDelete "${projectDir}/hangman-server/resources/static/js"
+    setDelete "resources/static/js"
 }
 
 build.dependsOn(copyClientJs)
