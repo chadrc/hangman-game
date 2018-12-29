@@ -29,4 +29,15 @@ class HangmanServiceTest {
         assertEquals(0, gameInfo.guesses.size)
         assertNull(gameInfo.result)
     }
+
+    @Test
+    fun makeGuess() {
+        utils.basicDataSetup()
+
+        val gameInfo = hangmanService.startGame()
+
+        val guessResult = hangmanService.makeGuess(gameInfo.game.id, 'c')
+
+        assertEquals('c', guessResult.guess)
+    }
 }

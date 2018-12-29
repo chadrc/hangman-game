@@ -1,6 +1,7 @@
 package com.chadrc.hangman
 
 import models.GameInfo
+import models.Guess
 
 class HangmanService {
     private val database = HangmanDatabase()
@@ -17,5 +18,11 @@ class HangmanService {
         val result = database.getGameResultWithGameId(id)
 
         return GameInfo(game, guesses, result)
+    }
+
+    fun makeGuess(gameId: Int, guess: Char): Guess {
+        database.getGame(gameId) ?: throw Exception("Game not found")
+
+        return database.createGuess(gameId, guess)
     }
 }
