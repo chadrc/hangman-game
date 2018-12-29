@@ -114,7 +114,7 @@ class DatabaseTest {
         val gameResult = database.createWonGameResult(game.id, true)
 
         assertEquals(game.id, gameResult.gameId)
-        assertEquals(null, gameResult.forfeit)
+        assertNull(gameResult.forfeit)
         assertEquals(true, gameResult.won)
 
         val resultSet = connection.prepareStatement("""
@@ -127,6 +127,33 @@ class DatabaseTest {
         assertEquals(game.id, resultSet.getInt("game_id"))
         assertEquals(true, resultSet.getBoolean("won"))
         assertNull(resultSet.getObject("forfeit"))
+
+        resultSet.close()
+    }
+
+    @Test
+    fun createForfeitGameResult() {
+        setUp()
+
+        val word = database.getWord("panda")
+        val game = database.createGame(word.id, 10)
+
+        val gameResult = database.createForfeitGameResult(game.id, true)
+
+        assertEquals(game.id, gameResult.gameId)
+        assertEquals(true, gameResult.forfeit)
+        assertNull(gameResult.won)
+
+        val resultSet = connection.prepareStatement("""
+            SELECT * FROM game_results WHERE id=${gameResult.id}
+        """.trimIndent()).executeQuery()
+
+        assertTrue(resultSet.next())
+
+        assertEquals(gameResult.id, resultSet.getInt("id"))
+        assertNull(resultSet.getObject("won"))
+        assertEquals(game.id, resultSet.getInt("game_id"))
+        assertEquals(true, resultSet.getBoolean("forfeit"))
 
         resultSet.close()
     }

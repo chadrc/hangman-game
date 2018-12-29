@@ -28,6 +28,9 @@ class Database {
 
         val id = resultSet.getInt("id")
 
+        resultSet.close()
+        statement.close()
+
         return Game(id, wordId, guessesAllowed)
     }
 
@@ -45,6 +48,9 @@ class Database {
         val id = resultSet.getInt("id")
         val wordId = resultSet.getInt("word_id")
         val guessesAllowed = resultSet.getInt("guesses_allowed")
+
+        resultSet.close()
+        statement.close()
 
         return Game(id, wordId, guessesAllowed)
     }
@@ -76,6 +82,9 @@ class Database {
 
         val id = resultSet.getInt("id")
 
+        resultSet.close()
+        statement.close()
+
         return Guess(id, gameId, guess)
     }
 
@@ -105,6 +114,9 @@ class Database {
             guesses.add(Guess(id, gameId, guessStr[0]))
         }
 
+        resultSet.close()
+        statement.close()
+
         return guesses
     }
 
@@ -129,6 +141,29 @@ class Database {
         statement.close()
 
         return GameResult(id, gameId, won)
+    }
+
+    fun createForfeitGameResult(gameId: Int, forfeit: Boolean): GameResult {
+        val statement = connection.prepareStatement("""
+            INSERT INTO game_results (game_id, forfeit)
+            VALUES (?, ?)
+        """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
+
+        statement.setInt(1, gameId)
+        statement.setBoolean(2, forfeit)
+
+        statement.executeUpdate()
+
+        val resultSet = statement.generatedKeys
+
+        resultSet.next()
+
+        val id = resultSet.getInt("id")
+
+        resultSet.close()
+        statement.close()
+
+        return GameResult(id, gameId, forfeit = forfeit)
     }
 
     private fun executeAndGetFirstWord(statement: PreparedStatement): Word {
