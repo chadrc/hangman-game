@@ -1,6 +1,7 @@
 package com.chadrc.hangman
 
 import models.Game
+import models.GameResult
 import models.Guess
 import models.Word
 import java.sql.*
@@ -105,6 +106,29 @@ class Database {
         }
 
         return guesses
+    }
+
+    fun createWonGameResult(gameId: Int, won: Boolean): GameResult {
+        val statement = connection.prepareStatement("""
+            INSERT INTO game_results (game_id, won)
+            VALUES (?, ?)
+        """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
+
+        statement.setInt(1, gameId)
+        statement.setBoolean(2, won)
+
+        statement.executeUpdate()
+
+        val resultSet = statement.generatedKeys
+
+        resultSet.next()
+
+        val id = resultSet.getInt("id")
+
+        resultSet.close()
+        statement.close()
+
+        return GameResult(id, gameId, won)
     }
 
     private fun executeAndGetFirstWord(statement: PreparedStatement): Word {

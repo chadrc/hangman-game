@@ -8,12 +8,12 @@ import java.sql.DriverManager
 import java.sql.Statement
 
 class DatabaseTest {
-    val connection: Connection
+    private val connection: Connection
         get() = DriverManager.getConnection(
             "jdbc:postgresql://localhost/postgres?user=postgres&password=password"
         )
 
-    val database = Database()
+    private val database = Database()
 
     @Test
     fun getRandomWord() {
@@ -51,9 +51,13 @@ class DatabaseTest {
         statement.setInt(1, game.id)
 
         val resultSet = statement.executeQuery()
-        resultSet.next()
+
+        assertTrue(resultSet.next())
+
         assertEquals(randomWord.id, resultSet.getInt("word_id"))
         assertEquals(10, resultSet.getInt("guesses_allowed"))
+
+        resultSet.close()
     }
 
     @Test
@@ -100,7 +104,35 @@ class DatabaseTest {
         assertEquals(4, guesses.size)
     }
 
+    @Test
+    fun createWonGameResult() {
+        setUp()
+
+        val word = database.getWord("panda")
+        val game = database.createGame(word.id, 10)
+
+        val gameResult = database.createWonGameResult(game.id, true)
+
+        assertEquals(game.id, gameResult.gameId)
+        assertEquals(null, gameResult.forfeit)
+        assertEquals(true, gameResult.won)
+
+        val resultSet = connection.prepareStatement("""
+            SELECT * FROM game_results WHERE id=${gameResult.id}
+        """.trimIndent()).executeQuery()
+
+        assertTrue(resultSet.next())
+
+        assertEquals(gameResult.id, resultSet.getInt("id"))
+        assertEquals(game.id, resultSet.getInt("game_id"))
+        assertEquals(true, resultSet.getBoolean("won"))
+        assertNull(resultSet.getObject("forfeit"))
+
+        resultSet.close()
+    }
+
     private fun setUp() {
+        emptyGameResults()
         emptyGuesses()
         emptyGames()
         emptyWords()
@@ -119,22 +151,22 @@ class DatabaseTest {
                         ('polar');
                 """
         )
+
+        statement.close()
     }
 
-    private fun emptyGuesses() {
-        emptyTable("guesses")
-    }
+    private fun emptyGameResults() = emptyTable("game_results")
 
-    private fun emptyGames() {
-        emptyTable("games")
-    }
+    private fun emptyGuesses() = emptyTable("guesses")
 
-    private fun emptyWords() {
-        emptyTable("words")
-    }
+    private fun emptyGames() = emptyTable("games")
+
+    private fun emptyWords() = emptyTable("words")
 
     private fun emptyTable(table: String) {
         val statement: Statement = connection.createStatement()
         statement.executeUpdate("DELETE FROM $table WHERE id IS NOT NULL")
+
+        statement.close()
     }
 }
