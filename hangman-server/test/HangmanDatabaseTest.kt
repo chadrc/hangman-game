@@ -3,22 +3,13 @@ package com.chadrc.hangman
 import models.Game
 import kotlin.test.*
 
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.Statement
-import kotlin.Exception
-
 class HangmanDatabaseTest {
-    private val connection: Connection
-        get() = DriverManager.getConnection(
-            "jdbc:postgresql://localhost/postgres?user=postgres&password=password"
-        )
-
     private val database = HangmanDatabase()
+    private val utils = TestUtils()
 
     @Test
     fun getRandomWord() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getRandomWord()!!
         val knownWords = listOf("panda", "polar", "grizzly")
@@ -27,8 +18,8 @@ class HangmanDatabaseTest {
 
     @Test
     fun getRandomWordWithNoWords() {
-        setUp()
-        emptyWords()
+        utils.basicDataSetup()
+        utils.emptyWords()
 
         val word = database.getRandomWord()
         assertNull(word)
@@ -36,7 +27,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun getWordWithString() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("panda")!!
         assertEquals("panda", word.word)
@@ -44,7 +35,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun getNonExistentWord() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("black")
         assertNull(word)
@@ -52,7 +43,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun createGame() {
-        setUp()
+        utils.basicDataSetup()
 
         val randomWord = database.getRandomWord()!!
         val game: Game = database.createGame(randomWord.id, 10)
@@ -62,7 +53,7 @@ class HangmanDatabaseTest {
         assertEquals(10, game.guessesAllowed)
 
         // check database for created game
-        val statement = connection.prepareStatement("""
+        val statement = utils.connection.prepareStatement("""
             SELECT * FROM games WHERE id=?
         """.trimIndent())
 
@@ -80,7 +71,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun getGame() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("panda")!!
         val createdGame = database.createGame(word.id, 15)
@@ -94,7 +85,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun getNonexistentGame() {
-        setUp()
+        utils.basicDataSetup()
 
         val game = database.getGame(9)
         assertNull(game)
@@ -102,7 +93,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun createGuess() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
@@ -115,7 +106,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun getGuesses() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
@@ -132,7 +123,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun createWonGameResult() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
@@ -143,7 +134,7 @@ class HangmanDatabaseTest {
         assertNull(gameResult.forfeit)
         assertEquals(true, gameResult.won)
 
-        val resultSet = connection.prepareStatement("""
+        val resultSet = utils.connection.prepareStatement("""
             SELECT * FROM game_results WHERE id=${gameResult.id}
         """.trimIndent()).executeQuery()
 
@@ -159,7 +150,7 @@ class HangmanDatabaseTest {
 
     @Test
     fun createForfeitGameResult() {
-        setUp()
+        utils.basicDataSetup()
 
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
@@ -170,7 +161,7 @@ class HangmanDatabaseTest {
         assertEquals(true, gameResult.forfeit)
         assertNull(gameResult.won)
 
-        val resultSet = connection.prepareStatement("""
+        val resultSet = utils.connection.prepareStatement("""
             SELECT * FROM game_results WHERE id=${gameResult.id}
         """.trimIndent()).executeQuery()
 
@@ -182,45 +173,5 @@ class HangmanDatabaseTest {
         assertEquals(true, resultSet.getBoolean("forfeit"))
 
         resultSet.close()
-    }
-
-    private fun setUp() {
-        emptyGameResults()
-        emptyGuesses()
-        emptyGames()
-        emptyWords()
-        addTestWords()
-    }
-
-    private fun addTestWords() {
-        val conn = connection
-
-        val statement = conn.createStatement()
-        statement.executeUpdate(
-            """
-            INSERT INTO words (word)
-                VALUES  ('panda'),
-                        ('grizzly'),
-                        ('polar');
-                """
-        )
-
-        statement.close()
-    }
-
-    private fun emptyGameResults() = emptyTable("game_results")
-
-    private fun emptyGuesses() = emptyTable("guesses")
-
-    private fun emptyGames() = emptyTable("games")
-
-    private fun emptyWords() = emptyTable("words")
-
-    private fun emptyTable(table: String) {
-        val statement: Statement = connection.createStatement()
-        @Suppress("SqlWithoutWhere")
-        statement.executeUpdate("DELETE FROM $table")
-
-        statement.close()
     }
 }
