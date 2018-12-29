@@ -20,9 +20,9 @@ class HangmanService {
         return GameInfo(game, guesses, result)
     }
 
-    fun makeGuess(gameId: Int, guess: Char): Guess {
+    fun makeGuess(gameId: Int, guess: Char): Result<Guess> {
         database.getGame(gameId) ?: throw Exception("Game not found")
 
-        return database.createGuess(gameId, guess)
+        return Ok(database.createGuess(gameId, guess))
     }
 }

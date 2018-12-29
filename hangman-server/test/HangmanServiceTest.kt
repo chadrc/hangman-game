@@ -38,6 +38,10 @@ class HangmanServiceTest {
 
         val guessResult = hangmanService.makeGuess(gameInfo.game.id, 'c')
 
-        assertEquals('c', guessResult.guess)
+        if (guessResult is Ok) {
+            assertEquals('c', guessResult.result().guess)
+        } else {
+            fail((guessResult as Error).message)
+        }
     }
 }
