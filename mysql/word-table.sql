@@ -7,7 +7,7 @@ CREATE TABLE words (
 CREATE TABLE games (
   id SERIAL PRIMARY KEY,
   word_id INTEGER NOT NULL REFERENCES words(id),
-  guess_allowed INTEGER NOT NULL
+  guesses_allowed INTEGER NOT NULL
 );
 
 CREATE TABLE guesses (

@@ -1,5 +1,6 @@
 package com.chadrc.hangman
 
+import models.Game
 import kotlin.test.*
 
 import java.sql.Connection
@@ -13,14 +14,6 @@ class DatabaseTest {
         )
 
     val database = Database()
-
-//    @Test
-//    fun createGame() {
-//        emptyWords()
-//        addTestWords()
-//
-//        database.createGame(10)
-//    }
 
     @Test
     fun getRandomWord() {
@@ -39,7 +32,32 @@ class DatabaseTest {
         assertEquals("panda", word.word)
     }
 
+    @Test
+    fun createGame() {
+        setUp()
+
+        val randomWord = database.getRandomWord()
+        val game: Game = database.createGame(randomWord.id, 10)
+
+        assertNotEquals(-1, game.id)
+        assertEquals(randomWord.id, game.wordId)
+        assertEquals(10, game.guessesAllowed)
+
+        // check database for created game
+        val statement = connection.prepareStatement("""
+            SELECT * FROM games WHERE id=?
+        """.trimIndent())
+
+        statement.setInt(1, game.id)
+
+        val resultSet = statement.executeQuery()
+        resultSet.next()
+        assertEquals(randomWord.id, resultSet.getInt("word_id"))
+        assertEquals(10, resultSet.getInt("guesses_allowed"))
+    }
+
     private fun setUp() {
+        emptyGames()
         emptyWords()
         addTestWords()
     }
@@ -47,7 +65,7 @@ class DatabaseTest {
     private fun addTestWords() {
         val conn = connection
 
-        val statement: Statement = conn.createStatement()
+        val statement = conn.createStatement()
         statement.executeUpdate(
             """
             INSERT INTO words (word)
@@ -58,10 +76,13 @@ class DatabaseTest {
         )
     }
 
-    private fun emptyWords() {
-        val conn = connection
+    private fun emptyGames() {
+        val statement: Statement = connection.createStatement()
+        statement.executeUpdate("DELETE FROM games WHERE id IS NOT NULL")
+    }
 
-        val statement: Statement = conn.createStatement()
+    private fun emptyWords() {
+        val statement: Statement = connection.createStatement()
         statement.executeUpdate("DELETE FROM words WHERE word IS NOT NULL")
     }
 }
