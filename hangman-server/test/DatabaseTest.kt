@@ -83,6 +83,23 @@ class DatabaseTest {
         assertEquals('r', guess.guess)
     }
 
+    @Test
+    fun getGuesses() {
+        setUp()
+
+        val word = database.getWord("panda")
+        val game = database.createGame(word.id, 10)
+
+        database.createGuess(game.id, 'r')
+        database.createGuess(game.id, 't')
+        database.createGuess(game.id, 's')
+        database.createGuess(game.id, 'e')
+
+        val guesses = database.getGuessesWithGameId(game.id)
+
+        assertEquals(4, guesses.size)
+    }
+
     private fun setUp() {
         emptyGuesses()
         emptyGames()

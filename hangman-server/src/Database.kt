@@ -86,6 +86,27 @@ class Database {
         return executeAndGetFirstWord(statement)
     }
 
+    fun getGuessesWithGameId(gameId: Int): List<Guess> {
+        val statement = connection.prepareStatement("""
+            SELECT * FROM guesses WHERE game_id=?
+        """.trimIndent())
+
+        statement.setInt(1, gameId)
+
+        val resultSet = statement.executeQuery()
+
+        val guesses = mutableListOf<Guess>()
+
+        while (resultSet.next()) {
+            val id = resultSet.getInt("id")
+            val guessStr = resultSet.getString("guess")
+
+            guesses.add(Guess(id, gameId, guessStr[0]))
+        }
+
+        return guesses
+    }
+
     private fun executeAndGetFirstWord(statement: PreparedStatement): Word {
         val resultSet = statement.executeQuery()
 
