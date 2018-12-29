@@ -57,7 +57,7 @@ class Database {
         return Game(id, wordId, guessesAllowed)
     }
 
-    fun getWord(word: String): Word {
+    fun getWord(word: String): Word? {
         val statement = connection.prepareStatement("""
             SELECT * FROM words WHERE word=?
         """.trimIndent())
@@ -90,7 +90,7 @@ class Database {
         return Guess(id, gameId, guess)
     }
 
-    fun getRandomWord(): Word {
+    fun getRandomWord(): Word? {
         val statement = connection.prepareStatement("""
             SELECT * FROM words OFFSET floor(random()*(SELECT COUNT(*) FROM words)) LIMIT 1
         """.trimIndent())
@@ -168,7 +168,7 @@ class Database {
         return GameResult(id, gameId, forfeit = forfeit)
     }
 
-    private fun executeAndGetFirstWord(statement: PreparedStatement): Word {
+    private fun executeAndGetFirstWord(statement: PreparedStatement): Word? {
         val resultSet = statement.executeQuery()
 
         val wordObj = makeWordFromNextResultSet(resultSet)
@@ -179,8 +179,10 @@ class Database {
         return wordObj
     }
 
-    private fun makeWordFromNextResultSet(resultSet: ResultSet): Word {
-        resultSet.next()
+    private fun makeWordFromNextResultSet(resultSet: ResultSet): Word? {
+        if (!resultSet.next()) {
+            return null
+        }
 
         val id = resultSet.getInt("id")
         val word = resultSet.getString("word")

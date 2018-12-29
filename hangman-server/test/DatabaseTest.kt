@@ -20,24 +20,41 @@ class DatabaseTest {
     fun getRandomWord() {
         setUp()
 
-        val word = database.getRandomWord()
+        val word = database.getRandomWord()!!
         val knownWords = listOf("panda", "polar", "grizzly")
         assert(knownWords.contains(word.word))
+    }
+
+    @Test
+    fun getRandomWordWithNoWords() {
+        setUp()
+        emptyWords()
+
+        val word = database.getRandomWord()
+        assertNull(word)
     }
 
     @Test
     fun getWordWithString() {
         setUp()
 
-        val word = database.getWord("panda")
+        val word = database.getWord("panda")!!
         assertEquals("panda", word.word)
+    }
+
+    @Test
+    fun getNonExistentWord() {
+        setUp()
+
+        val word = database.getWord("black")
+        assertNull(word)
     }
 
     @Test
     fun createGame() {
         setUp()
 
-        val randomWord = database.getRandomWord()
+        val randomWord = database.getRandomWord()!!
         val game: Game = database.createGame(randomWord.id, 10)
 
         assertNotEquals(-1, game.id)
@@ -65,7 +82,7 @@ class DatabaseTest {
     fun getGame() {
         setUp()
 
-        val word = database.getWord("panda")
+        val word = database.getWord("panda")!!
         val createdGame = database.createGame(word.id, 15)
 
         val game = database.getGame(createdGame.id) ?: throw Exception("Game doesn't exist")
@@ -87,7 +104,7 @@ class DatabaseTest {
     fun createGuess() {
         setUp()
 
-        val word = database.getWord("panda")
+        val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
         val guess = database.createGuess(game.id, 'r')
@@ -100,7 +117,7 @@ class DatabaseTest {
     fun getGuesses() {
         setUp()
 
-        val word = database.getWord("panda")
+        val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
         database.createGuess(game.id, 'r')
@@ -117,7 +134,7 @@ class DatabaseTest {
     fun createWonGameResult() {
         setUp()
 
-        val word = database.getWord("panda")
+        val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
         val gameResult = database.createWonGameResult(game.id, true)
@@ -144,7 +161,7 @@ class DatabaseTest {
     fun createForfeitGameResult() {
         setUp()
 
-        val word = database.getWord("panda")
+        val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
         val gameResult = database.createForfeitGameResult(game.id, true)
