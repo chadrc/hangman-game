@@ -6,7 +6,7 @@ import models.Guess
 import models.Word
 import java.sql.*
 
-class Database {
+class HangmanDatabase {
     private val connection: Connection = DriverManager.getConnection(
         "jdbc:postgresql://localhost/postgres?user=postgres&password=password"
     )

@@ -8,13 +8,13 @@ import java.sql.DriverManager
 import java.sql.Statement
 import kotlin.Exception
 
-class DatabaseTest {
+class HangmanDatabaseTest {
     private val connection: Connection
         get() = DriverManager.getConnection(
             "jdbc:postgresql://localhost/postgres?user=postgres&password=password"
         )
 
-    private val database = Database()
+    private val database = HangmanDatabase()
 
     @Test
     fun getRandomWord() {
