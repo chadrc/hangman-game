@@ -24,12 +24,24 @@ class DatabaseTest {
 
     @Test
     fun getRandomWord() {
-        emptyWords()
-        addTestWords()
+        setUp()
 
         val word = database.getRandomWord()
         val knownWords = listOf("panda", "polar", "grizzly")
         assert(knownWords.contains(word.word))
+    }
+
+    @Test
+    fun getWordWithString() {
+        setUp()
+
+        val word = database.getWord("panda")
+        assertEquals("panda", word.word)
+    }
+
+    private fun setUp() {
+        emptyWords()
+        addTestWords()
     }
 
     private fun addTestWords() {

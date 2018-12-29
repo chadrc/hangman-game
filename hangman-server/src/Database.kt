@@ -1,8 +1,7 @@
 package com.chadrc.hangman
 
 import models.Word
-import java.sql.Connection
-import java.sql.DriverManager
+import java.sql.*
 
 class Database {
     private val connection: Connection = DriverManager.getConnection(
@@ -17,19 +16,40 @@ class Database {
 
     }
 
+    fun getWord(word: String): Word {
+        val statement = connection.prepareStatement("""
+            SELECT * FROM words WHERE word=?
+        """.trimIndent())
+
+        statement.setString(1, word)
+
+        return executeAndGetFirstWord(statement)
+    }
+
     fun getRandomWord(): Word {
-        val statement = connection.createStatement()
-        val resultSet = statement.executeQuery("""
+        val statement = connection.prepareStatement("""
             SELECT * FROM words OFFSET floor(random()*(SELECT COUNT(*) FROM words)) LIMIT 1
         """.trimIndent())
 
+        return executeAndGetFirstWord(statement)
+    }
+
+    private fun executeAndGetFirstWord(statement: PreparedStatement): Word {
+        val resultSet = statement.executeQuery()
+
+        val wordObj = makeWordFromNextResultSet(resultSet)
+
+        resultSet.close()
+        statement.close()
+
+        return wordObj
+    }
+
+    private fun makeWordFromNextResultSet(resultSet: ResultSet): Word {
         resultSet.next()
 
         val id = resultSet.getInt("id")
         val word = resultSet.getString("word")
-
-        resultSet.close()
-        statement.close()
 
         return Word(id, word)
     }
