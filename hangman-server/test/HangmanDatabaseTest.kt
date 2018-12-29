@@ -174,4 +174,20 @@ class HangmanDatabaseTest {
 
         resultSet.close()
     }
+
+    @Test
+    fun getGameResult() {
+        utils.basicDataSetup()
+
+        val word = database.getWord("panda")!!
+        val game = database.createGame(word.id, 10)
+
+        database.createForfeitGameResult(game.id, true)
+
+        val gameResult = database.getGameResultWithGameId(game.id)
+
+        assertNotNull(gameResult)
+        assertTrue(gameResult.forfeit!!)
+        assertNull(gameResult.won)
+    }
 }

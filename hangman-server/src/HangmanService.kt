@@ -10,4 +10,12 @@ class HangmanService {
         val game = database.createGame(word.id, 10)
         return GameInfo(game)
     }
+
+    fun getGame(id: Int): GameInfo? {
+        val game = database.getGame(id) ?: return null
+        val guesses = database.getGuessesWithGameId(id)
+        val result = database.getGameResultWithGameId(id)
+
+        return GameInfo(game, guesses, result)
+    }
 }

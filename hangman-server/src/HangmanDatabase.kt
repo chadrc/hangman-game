@@ -168,6 +168,28 @@ class HangmanDatabase {
         return GameResult(id, gameId, forfeit = forfeit)
     }
 
+    fun getGameResultWithGameId(gameId: Int): GameResult? {
+        val statement = connection.prepareStatement("""
+            SELECT * FROM game_results WHERE game_id=?
+        """.trimIndent())
+
+        statement.setInt(1, gameId)
+
+        val resultSet = statement.executeQuery()
+
+        if (!resultSet.next()) {
+            return null
+        }
+
+        val id = resultSet.getInt("id")
+        val wonObj = resultSet.getObject("won")
+        val won = if (wonObj is Boolean) wonObj else null
+        val forfeitObj = resultSet.getObject("forfeit")
+        val forfeit = if (forfeitObj is Boolean) forfeitObj else null
+
+        return GameResult(id, gameId, won, forfeit)
+    }
+
     private fun executeAndGetFirstWord(statement: PreparedStatement): Word? {
         val resultSet = statement.executeQuery()
 
