@@ -70,7 +70,21 @@ class DatabaseTest {
         assertEquals(createdGame.guessesAllowed, game.guessesAllowed)
     }
 
+    @Test
+    fun createGuess() {
+        setUp()
+
+        val word = database.getWord("panda")
+        val game = database.createGame(word.id, 10)
+
+        val guess = database.createGuess(game.id, 'r')
+
+        assertNotEquals(-1, guess.id)
+        assertEquals('r', guess.guess)
+    }
+
     private fun setUp() {
+        emptyGuesses()
         emptyGames()
         emptyWords()
         addTestWords()
@@ -90,13 +104,20 @@ class DatabaseTest {
         )
     }
 
+    private fun emptyGuesses() {
+        emptyTable("guesses")
+    }
+
     private fun emptyGames() {
-        val statement: Statement = connection.createStatement()
-        statement.executeUpdate("DELETE FROM games WHERE id IS NOT NULL")
+        emptyTable("games")
     }
 
     private fun emptyWords() {
+        emptyTable("words")
+    }
+
+    private fun emptyTable(table: String) {
         val statement: Statement = connection.createStatement()
-        statement.executeUpdate("DELETE FROM words WHERE word IS NOT NULL")
+        statement.executeUpdate("DELETE FROM $table WHERE id IS NOT NULL")
     }
 }
