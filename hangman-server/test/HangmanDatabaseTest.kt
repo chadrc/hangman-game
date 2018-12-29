@@ -122,6 +122,18 @@ class HangmanDatabaseTest {
     }
 
     @Test
+    fun getNoGuesses() {
+        utils.basicDataSetup()
+
+        val word = database.getWord("panda")!!
+        val game = database.createGame(word.id, 10)
+
+        val guesses = database.getGuessesWithGameId(game.id)
+
+        assertEquals(0, guesses.size)
+    }
+
+    @Test
     fun createWonGameResult() {
         utils.basicDataSetup()
 
