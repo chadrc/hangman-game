@@ -6,6 +6,7 @@ import kotlin.test.*
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
+import kotlin.Exception
 
 class DatabaseTest {
     private val connection: Connection
@@ -67,11 +68,19 @@ class DatabaseTest {
         val word = database.getWord("panda")
         val createdGame = database.createGame(word.id, 15)
 
-        val game = database.getGame(createdGame.id)
+        val game = database.getGame(createdGame.id) ?: throw Exception("Game doesn't exist")
 
         assertEquals(createdGame.id, game.id)
         assertEquals(createdGame.wordId, game.wordId)
         assertEquals(createdGame.guessesAllowed, game.guessesAllowed)
+    }
+
+    @Test
+    fun getNonexistentGame() {
+        setUp()
+
+        val game = database.getGame(9)
+        assertNull(game)
     }
 
     @Test
