@@ -218,7 +218,8 @@ class DatabaseTest {
 
     private fun emptyTable(table: String) {
         val statement: Statement = connection.createStatement()
-        statement.executeUpdate("DELETE FROM $table WHERE id IS NOT NULL")
+        @Suppress("SqlWithoutWhere")
+        statement.executeUpdate("DELETE FROM $table")
 
         statement.close()
     }
