@@ -29,6 +29,24 @@ class Database {
         return Game(id, wordId, guessesAllowed)
     }
 
+    fun getGame(gameId: Int): Game {
+        val statement = connection.prepareStatement("""
+            SELECT * FROM games WHERE id=?
+        """.trimIndent())
+
+        statement.setInt(1, gameId)
+
+        val resultSet = statement.executeQuery()
+
+        resultSet.next()
+
+        val id = resultSet.getInt("id")
+        val wordId = resultSet.getInt("word_id")
+        val guessesAllowed = resultSet.getInt("guesses_allowed")
+
+        return Game(id, wordId, guessesAllowed)
+    }
+
     fun getWord(word: String): Word {
         val statement = connection.prepareStatement("""
             SELECT * FROM words WHERE word=?
