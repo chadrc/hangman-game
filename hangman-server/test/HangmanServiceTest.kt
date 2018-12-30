@@ -134,7 +134,7 @@ class HangmanServiceTest {
         val game = startGameResult.result().game
 
         val forfeitResult = hangmanService.forfeitGame(game.id) as Ok
-        val info = (forfeitResult as Ok).result()
+        val info = forfeitResult.result()
 
         assertNotNull(info.result)
         assertTrue(info.result?.forfeit!!)
