@@ -158,6 +158,9 @@ class HangmanDatabase {
 
         val id = resultSet.getInt("id")
 
+        resultSet.close()
+        statement.close()
+
         Guess(id, gameId, word)
     }
 
@@ -172,6 +175,30 @@ class HangmanDatabase {
     fun getGuessesWithGameId(gameId: Int): List<Guess> = withConnection {
         val statement = connection.prepareStatement("""
             SELECT * FROM character_guesses WHERE game_id=?
+        """.trimIndent())
+
+        statement.setInt(1, gameId)
+
+        val resultSet = statement.executeQuery()
+
+        val guesses = mutableListOf<Guess>()
+
+        while (resultSet.next()) {
+            val id = resultSet.getInt("id")
+            val guessStr = resultSet.getString("guess")
+
+            guesses.add(Guess(id, gameId, guessStr))
+        }
+
+        resultSet.close()
+        statement.close()
+
+        guesses
+    }
+
+    fun getWordGuessesByGameId(gameId: Int): List<Guess> = withConnection {
+        val statement = it.prepareStatement("""
+            SELECT * FROM word_guesses WHERE game_id=?
         """.trimIndent())
 
         statement.setInt(1, gameId)

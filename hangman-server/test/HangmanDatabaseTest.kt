@@ -157,6 +157,21 @@ class HangmanDatabaseTest {
     }
 
     @Test
+    fun getWordGuesses() {
+        val word = database.getWord("panda")!!
+        val game = database.createGame(word.id, 10)
+
+        database.createWordGuess(game.id, "grizzly")
+        database.createWordGuess(game.id, "black")
+        database.createWordGuess(game.id, "brown")
+        database.createWordGuess(game.id, "polar")
+
+        val wordGuesses = database.getWordGuessesByGameId(game.id)
+
+        assertEquals(4, wordGuesses.size)
+    }
+
+    @Test
     fun createWonGameResult() {
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
