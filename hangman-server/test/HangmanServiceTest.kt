@@ -1,5 +1,6 @@
 package com.chadrc.hangman
 
+import com.chadrc.hangman.errors.GameAlreadyCompleteError
 import com.chadrc.hangman.errors.GameNotFoundError
 import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
@@ -107,5 +108,21 @@ class HangmanServiceTest {
 
         assertNotNull(guessResult?.result)
         assertFalse(guessResult?.result?.won!!)
+    }
+
+    @Test
+    fun `Make guess on game that is already complete returns Error`() {
+        utils.basicDataSetup()
+
+        val startGameResult = hangmanService.startGame() as Ok
+        val game = startGameResult.result().game
+
+        for (c in listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')) {
+            hangmanService.makeGuess(game.id, c)
+        }
+
+        val guessResult = hangmanService.makeGuess(game.id, 'k')
+
+        assertTrue(guessResult is GameAlreadyCompleteError)
     }
 }

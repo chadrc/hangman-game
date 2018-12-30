@@ -1,5 +1,6 @@
 package com.chadrc.hangman
 
+import com.chadrc.hangman.errors.GameAlreadyCompleteError
 import com.chadrc.hangman.errors.GameNotFoundError
 import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
@@ -23,6 +24,12 @@ class HangmanService {
 
     fun makeGuess(gameId: Int, guess: Char): Result<GameInfo> {
         val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
+
+        val gameResult = database.getGameResultWithGameId(game.id)
+
+        if (gameResult != null) {
+            return GameAlreadyCompleteError(game.id)
+        }
 
         database.createGuess(gameId, guess)
 
