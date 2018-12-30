@@ -16,8 +16,10 @@ import kotlin.test.fail
 
 @KtorExperimentalAPI
 class RestRouteTest {
+    private val utils = TestUtils()
     @Test
     fun startGame() {
+        utils.basicDataSetup()
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Post, "/start").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
