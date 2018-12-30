@@ -10,20 +10,29 @@ class HangmanServiceTest {
     fun startGame() {
         utils.basicDataSetup()
 
-        val gameInfo = hangmanService.startGame()
+        val startGameResult = hangmanService.startGame()
 
-        assertEquals(10, gameInfo.game.guessesAllowed)
-        assertEquals(0, gameInfo.guesses.size)
-        assertNull(gameInfo.result)
+        assert(startGameResult is Ok)
+
+        assertEquals(10, startGameResult.result()!!.game.guessesAllowed)
+        assertEquals(0, startGameResult.result()!!.guesses.size)
+        assertNull(startGameResult.result()!!.result)
+    }
+
+    @Test
+    fun startGameWithNoAvailableWords() {
+        utils.emptyAll()
+        val gameInfoResult = hangmanService.startGame()
+        assertTrue(gameInfoResult is Error)
     }
 
     @Test
     fun getGame() {
         utils.basicDataSetup()
 
-        val createdGameInfo = hangmanService.startGame()
+        val startGameResult = hangmanService.startGame()
 
-        val gameInfo = hangmanService.getGame(createdGameInfo.game.id)
+        val gameInfo = hangmanService.getGame(startGameResult.result()!!.game.id)
 
         assertNotNull(gameInfo)
         assertEquals(0, gameInfo.guesses.size)
@@ -34,12 +43,12 @@ class HangmanServiceTest {
     fun makeGuess() {
         utils.basicDataSetup()
 
-        val gameInfo = hangmanService.startGame()
+        val startGameResult = hangmanService.startGame()
 
-        val guessResult = hangmanService.makeGuess(gameInfo.game.id, 'c')
+        val guessResult = hangmanService.makeGuess(startGameResult.result()!!.game.id, 'c')
 
         if (guessResult is Ok) {
-            assertEquals('c', guessResult.result().guess)
+            assertEquals('c', guessResult.result()!!.guess)
         } else {
             fail((guessResult as Error).message)
         }
