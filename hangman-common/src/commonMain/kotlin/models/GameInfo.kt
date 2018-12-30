@@ -1,6 +1,6 @@
 package models
 
-class GameInfo(
+data class GameInfo(
     val game: Game,
     val guesses: List<Guess> = emptyList(),
     val result: GameResult? = null

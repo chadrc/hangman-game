@@ -11,6 +11,7 @@ import kotlinx.css.*
 import io.ktor.content.*
 import io.ktor.http.content.*
 import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.jackson.*
 import io.ktor.features.*
 import kotlin.test.*
@@ -23,15 +24,6 @@ class ApplicationTest {
     fun testRoot() {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/").apply {
-                assertEquals(HttpStatusCode.OK, response.status())
-            }
-        }
-    }
-
-    @Test
-    fun testStartGame() {
-        withTestApplication({ module(testing = true) }) {
-            handleRequest(HttpMethod.Post, "/start").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
             }
         }

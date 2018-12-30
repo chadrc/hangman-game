@@ -1,6 +1,6 @@
 package models
 
-class Guess(
+data class Guess(
     val id: Int = -1,
     val gameId: Int = -1,
     val guess: String = ""
