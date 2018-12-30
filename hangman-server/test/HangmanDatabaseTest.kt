@@ -1,11 +1,18 @@
 package com.chadrc.hangman
 
 import models.Game
+import org.junit.After
 import kotlin.test.*
 
 class HangmanDatabaseTest {
     private val database = HangmanDatabase()
     private val utils = TestUtils()
+
+    @After
+    fun cleanUp() {
+        database.close()
+        utils.close()
+    }
 
     @Test
     fun createWord() {

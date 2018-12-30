@@ -1,18 +1,37 @@
 package com.chadrc.hangman
 
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import models.Game
 import models.GameResult
 import models.Guess
 import models.Word
 import java.sql.*
+import javax.sql.DataSource
 
 class HangmanDatabase {
-    private val connection: Connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost/postgres?user=postgres&password=password"
-    )
+    private val datasource: HikariDataSource
 
-    fun createWord(word: String): Word {
-        val statement = connection.prepareStatement("""
+    init {
+        val config = HikariConfig()
+        config.dataSourceClassName = "org.postgresql.ds.PGSimpleDataSource"
+        config.username = "postgres"
+        config.password = "password"
+        config.maximumPoolSize = 5
+
+        datasource = HikariDataSource(config)
+    }
+
+    private val connection: Connection = datasource.connection
+
+    private fun <T> withConnection(func: (conn: Connection) -> T): T = func(connection)
+
+    fun close() {
+        datasource.close()
+    }
+
+    fun createWord(word: String): Word = withConnection {
+        val statement = it.prepareStatement("""
             INSERT INTO words (word)
             VALUES (?)
         """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
@@ -27,21 +46,24 @@ class HangmanDatabase {
 
         val id = resultSet.getInt("id")
 
-        return Word(id, word)
+        resultSet.close()
+        statement.close()
+
+        Word(id, word)
     }
 
-    fun getWordById(id: Int): Word? {
-        val statement = connection.prepareStatement("""
+    fun getWordById(id: Int): Word? = withConnection {
+        val statement = it.prepareStatement("""
             SELECT * FROM words WHERE id=?
         """.trimIndent())
 
         statement.setInt(1, id)
 
-        return executeAndGetFirstWord(statement)
+        executeAndGetFirstWord(statement)
     }
 
-    fun createGame(wordId: Int, guessesAllowed: Int): Game {
-        val statement = connection.prepareStatement("""
+    fun createGame(wordId: Int, guessesAllowed: Int): Game = withConnection {
+        val statement = it.prepareStatement("""
             INSERT INTO games (word_id, guesses_allowed)
             VALUES (?, ?)
         """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
@@ -60,10 +82,10 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return Game(id, wordId, guessesAllowed)
+        Game(id, wordId, guessesAllowed)
     }
 
-    fun getGame(gameId: Int): Game? {
+    fun getGame(gameId: Int): Game? = withConnection {
         val statement = connection.prepareStatement("""
             SELECT * FROM games WHERE id=?
         """.trimIndent())
@@ -73,7 +95,7 @@ class HangmanDatabase {
         val resultSet = statement.executeQuery()
 
         if (!resultSet.next()) {
-            return null
+            return@withConnection null
         }
 
         val id = resultSet.getInt("id")
@@ -83,20 +105,20 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return Game(id, wordId, guessesAllowed)
+        Game(id, wordId, guessesAllowed)
     }
 
-    fun getWord(word: String): Word? {
+    fun getWord(word: String): Word? = withConnection {
         val statement = connection.prepareStatement("""
             SELECT * FROM words WHERE word=?
         """.trimIndent())
 
         statement.setString(1, word)
 
-        return executeAndGetFirstWord(statement)
+        executeAndGetFirstWord(statement)
     }
 
-    fun createGuess(gameId: Int, guess: Char): Guess {
+    fun createGuess(gameId: Int, guess: Char): Guess = withConnection {
         val statement = connection.prepareStatement("""
             INSERT INTO character_guesses (game_id, guess)
             VALUES (?, ?)
@@ -116,18 +138,18 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return Guess(id, gameId, guess)
+        Guess(id, gameId, guess)
     }
 
-    fun getRandomWord(): Word? {
+    fun getRandomWord(): Word? = withConnection {
         val statement = connection.prepareStatement("""
             SELECT * FROM words OFFSET floor(random()*(SELECT COUNT(*) FROM words)) LIMIT 1
         """.trimIndent())
 
-        return executeAndGetFirstWord(statement)
+        executeAndGetFirstWord(statement)
     }
 
-    fun getGuessesWithGameId(gameId: Int): List<Guess> {
+    fun getGuessesWithGameId(gameId: Int): List<Guess> = withConnection {
         val statement = connection.prepareStatement("""
             SELECT * FROM character_guesses WHERE game_id=?
         """.trimIndent())
@@ -148,10 +170,10 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return guesses
+        guesses
     }
 
-    fun createWonGameResult(gameId: Int, won: Boolean): GameResult {
+    fun createWonGameResult(gameId: Int, won: Boolean): GameResult = withConnection {
         val statement = connection.prepareStatement("""
             INSERT INTO game_results (game_id, won)
             VALUES (?, ?)
@@ -171,10 +193,10 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return GameResult(id, gameId, won)
+        GameResult(id, gameId, won)
     }
 
-    fun createForfeitGameResult(gameId: Int, forfeit: Boolean): GameResult {
+    fun createForfeitGameResult(gameId: Int, forfeit: Boolean): GameResult = withConnection {
         val statement = connection.prepareStatement("""
             INSERT INTO game_results (game_id, forfeit)
             VALUES (?, ?)
@@ -194,10 +216,10 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return GameResult(id, gameId, forfeit = forfeit)
+        GameResult(id, gameId, forfeit = forfeit)
     }
 
-    fun getGameResultWithGameId(gameId: Int): GameResult? {
+    fun getGameResultWithGameId(gameId: Int): GameResult? = withConnection {
         val statement = connection.prepareStatement("""
             SELECT * FROM game_results WHERE game_id=?
         """.trimIndent())
@@ -207,7 +229,7 @@ class HangmanDatabase {
         val resultSet = statement.executeQuery()
 
         if (!resultSet.next()) {
-            return null
+            return@withConnection null
         }
 
         val id = resultSet.getInt("id")
@@ -216,10 +238,10 @@ class HangmanDatabase {
         val forfeitObj = resultSet.getObject("forfeit")
         val forfeit = if (forfeitObj is Boolean) forfeitObj else null
 
-        return GameResult(id, gameId, won, forfeit)
+        GameResult(id, gameId, won, forfeit)
     }
 
-    private fun executeAndGetFirstWord(statement: PreparedStatement): Word? {
+    private fun executeAndGetFirstWord(statement: PreparedStatement): Word? = withConnection {
         val resultSet = statement.executeQuery()
 
         val wordObj = makeWordFromNextResultSet(resultSet)
@@ -227,17 +249,17 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        return wordObj
+        wordObj
     }
 
-    private fun makeWordFromNextResultSet(resultSet: ResultSet): Word? {
+    private fun makeWordFromNextResultSet(resultSet: ResultSet): Word? = withConnection {
         if (!resultSet.next()) {
-            return null
+            return@withConnection null
         }
 
         val id = resultSet.getInt("id")
         val word = resultSet.getString("word")
 
-        return Word(id, word)
+        Word(id, word)
     }
 }

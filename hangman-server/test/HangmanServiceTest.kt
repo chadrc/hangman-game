@@ -4,12 +4,19 @@ import com.chadrc.hangman.errors.GameAlreadyCompleteError
 import com.chadrc.hangman.errors.GameNotFoundError
 import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
+import org.junit.After
 import kotlin.test.*
 
 class HangmanServiceTest {
     private val hangmanService = HangmanService()
     private val hangmanDatabase = HangmanDatabase()
     private val utils = TestUtils()
+
+    @After
+    fun cleanUp() {
+        hangmanDatabase.close()
+        utils.close()
+    }
 
     @Test
     fun startGame() {
