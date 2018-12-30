@@ -219,4 +219,19 @@ class HangmanServiceTest {
 
         assertTrue(forfeitResult is GameAlreadyCompleteError)
     }
+
+    @Test
+    fun `Forfeiting game with character and word guesses returns all guesses`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        hangmanService.makeGuess(startGameResult.result().game.id, 'b')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'l')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'n')
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "black")
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "brown")
+
+        val forfeitResult = hangmanService.forfeitGame(startGameResult.result().game.id) as Ok
+
+        assertEquals(5, forfeitResult.result().guesses.size)
+    }
 }

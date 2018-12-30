@@ -74,6 +74,21 @@ class HangmanService {
         return Ok(GameInfo(game, guesses, result))
     }
 
+    fun forfeitGame(gameId: Int): Result<GameInfo> {
+        val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
+
+        val existingResult = database.getGameResultWithGameId(gameId)
+        if (existingResult != null) {
+            return GameAlreadyCompleteError(gameId)
+        }
+
+        val guesses = getAllGuessesForGameId(gameId)
+
+        val result = database.createForfeitGameResult(gameId, true)
+
+        return Ok(GameInfo(game, guesses, result))
+    }
+
     private fun getAllGuessesForGameId(gameId: Int): List<Guess> {
         val characterGuesses = database.getGuessesWithGameId(gameId)
         val wordGuesses = database.getWordGuessesByGameId(gameId)
@@ -84,20 +99,5 @@ class HangmanService {
         list.addAll(wordGuesses)
 
         return list
-    }
-
-    fun forfeitGame(gameId: Int): Result<GameInfo> {
-        val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
-
-        val existingResult = database.getGameResultWithGameId(gameId)
-        if (existingResult != null) {
-            return GameAlreadyCompleteError(gameId)
-        }
-
-        val guesses = database.getGuessesWithGameId(gameId)
-
-        val result = database.createForfeitGameResult(gameId, true)
-
-        return Ok(GameInfo(game, guesses, result))
     }
 }
