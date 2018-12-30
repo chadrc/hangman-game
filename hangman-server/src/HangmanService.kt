@@ -56,4 +56,14 @@ class HangmanService {
 
         return Ok(GameInfo(game, guesses, result))
     }
+
+    fun forfeitGame(gameId: Int): Result<GameInfo> {
+        val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
+
+        val guesses = database.getGuessesWithGameId(gameId)
+
+        val result = database.createForfeitGameResult(gameId, true)
+
+        return Ok(GameInfo(game, guesses, result))
+    }
 }
