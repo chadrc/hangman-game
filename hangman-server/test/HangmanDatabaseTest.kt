@@ -2,21 +2,27 @@ package com.chadrc.hangman
 
 import models.Game
 import org.junit.After
+import org.junit.Before
 import kotlin.test.*
 
 class HangmanDatabaseTest {
     private val database = HangmanDatabase()
     private val utils = TestUtils()
 
+    @Before
+    fun setUp() {
+        utils.basicDataSetup()
+    }
+
     @After
     fun cleanUp() {
+        utils.emptyAll()
         database.close()
         utils.close()
     }
 
     @Test
     fun createWord() {
-        utils.basicDataSetup()
         val word = database.createWord("brown")
 
         assertNotEquals(-1, word.id)
@@ -25,8 +31,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun getRandomWord() {
-        utils.basicDataSetup()
-
         val word = database.getRandomWord()!!
         val knownWords = listOf("panda", "polar", "grizzly")
         assert(knownWords.contains(word.word))
@@ -34,33 +38,25 @@ class HangmanDatabaseTest {
 
     @Test
     fun getRandomWordWithNoWords() {
-        utils.basicDataSetup()
         utils.emptyWords()
-
         val word = database.getRandomWord()
         assertNull(word)
     }
 
     @Test
     fun getWordWithString() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         assertEquals("panda", word.word)
     }
 
     @Test
     fun getNonExistentWord() {
-        utils.basicDataSetup()
-
         val word = database.getWord("black")
         assertNull(word)
     }
 
     @Test
     fun getWordById() {
-        utils.basicDataSetup()
-
         val createdWord = database.createWord("brown")
 
         val word = database.getWordById(createdWord.id)!!
@@ -71,8 +67,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun createGame() {
-        utils.basicDataSetup()
-
         val randomWord = database.getRandomWord()!!
         val game: Game = database.createGame(randomWord.id, 10)
 
@@ -99,8 +93,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun getGame() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val createdGame = database.createGame(word.id, 15)
 
@@ -113,16 +105,12 @@ class HangmanDatabaseTest {
 
     @Test
     fun getNonexistentGame() {
-        utils.basicDataSetup()
-
         val game = database.getGame(9)
         assertNull(game)
     }
 
     @Test
     fun createGuess() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
@@ -134,8 +122,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun getGuesses() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
@@ -151,8 +137,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun getNoGuesses() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
@@ -163,8 +147,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun createWonGameResult() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
@@ -190,8 +172,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun createForfeitGameResult() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 
@@ -217,8 +197,6 @@ class HangmanDatabaseTest {
 
     @Test
     fun getGameResult() {
-        utils.basicDataSetup()
-
         val word = database.getWord("panda")!!
         val game = database.createGame(word.id, 10)
 

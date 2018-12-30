@@ -5,6 +5,7 @@ import com.chadrc.hangman.errors.GameNotFoundError
 import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
 import org.junit.After
+import org.junit.Before
 import kotlin.test.*
 
 class HangmanServiceTest {
@@ -12,16 +13,20 @@ class HangmanServiceTest {
     private val hangmanDatabase = HangmanDatabase()
     private val utils = TestUtils()
 
+    @Before
+    fun setUp() {
+        utils.basicDataSetup()
+    }
+
     @After
     fun cleanUp() {
+        utils.emptyAll()
         hangmanDatabase.close()
         utils.close()
     }
 
     @Test
     fun startGame() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
 
         assertEquals(10, startGameResult.result().game.guessesAllowed)
@@ -38,8 +43,6 @@ class HangmanServiceTest {
 
     @Test
     fun getGame() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
 
         val getGameResult = hangmanService.getGame(startGameResult.result().game.id) as Ok
@@ -51,8 +54,6 @@ class HangmanServiceTest {
 
     @Test
     fun `Getting a game that does not exist returns an Error`() {
-        utils.basicDataSetup()
-
         val getGameResult = hangmanService.getGame(10)
 
         assertTrue(getGameResult is GameNotFoundError)
@@ -60,8 +61,6 @@ class HangmanServiceTest {
 
     @Test
     fun makeGuess() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
 
         val guessResult = hangmanService.makeGuess(startGameResult.result().game.id, 'c')
@@ -76,8 +75,6 @@ class HangmanServiceTest {
 
     @Test
     fun `Making a guess on game that does not exist returns an Error`() {
-        utils.basicDataSetup()
-
         val guessResult = hangmanService.makeGuess(10, 'c')
 
         assertTrue(guessResult is GameNotFoundError)
@@ -85,8 +82,6 @@ class HangmanServiceTest {
 
     @Test
     fun makeGuessesUntilWon() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
 
@@ -103,8 +98,6 @@ class HangmanServiceTest {
 
     @Test
     fun makeGuessesUntilLost() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
 
@@ -119,8 +112,6 @@ class HangmanServiceTest {
 
     @Test
     fun `Make guess on game that is already complete returns Error`() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
 
@@ -135,8 +126,6 @@ class HangmanServiceTest {
 
     @Test
     fun `Forfeiting has result on game info`() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
 
@@ -149,8 +138,6 @@ class HangmanServiceTest {
 
     @Test
     fun `Forfeiting game that is does not exists returns Error`() {
-        utils.basicDataSetup()
-
         val forfeitResult = hangmanService.forfeitGame(10)
 
         assertTrue(forfeitResult is GameNotFoundError)
@@ -158,8 +145,6 @@ class HangmanServiceTest {
 
     @Test
     fun `Forfeiting game that is already complete returns Error`() {
-        utils.basicDataSetup()
-
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
 
