@@ -74,7 +74,7 @@ class HangmanServiceTest {
     }
 
     @Test
-    fun makeGuessesUntilOut() {
+    fun makeGuessesUntilLost() {
         utils.basicDataSetup()
 
         val startGameResult = hangmanService.startGame() as Ok
