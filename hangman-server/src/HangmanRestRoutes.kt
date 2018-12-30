@@ -60,6 +60,11 @@ fun Routing.hangmanRestRoutes() {
             else -> null
         }
 
+        if (makeGuessResult == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+
         when (makeGuessResult) {
             is Ok -> {
                 val newGameInfo = makeGuessResult.result()

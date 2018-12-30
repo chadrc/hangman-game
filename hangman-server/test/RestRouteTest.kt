@@ -120,4 +120,17 @@ class RestRouteTest {
             }
         }
     }
+
+    @Test
+    fun `Make guess with empty guess returns bad request`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString(
+                    GuessRequest(10, "")
+                ))
+            }.apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
 }
