@@ -30,9 +30,13 @@ fun Routing.hangmanRestRoutes() {
     get("/game/{gameId}") {
         val gameIdStr = call.parameters["gameId"]
 
-        val gameId = gameIdStr?.toInt()
+        val gameId = gameIdStr?.toIntOrNull()
+        if (gameId == null) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@get
+        }
 
-        val getGameResult = hangmanService.getGame(gameId!!)
+        val getGameResult = hangmanService.getGame(gameId)
 
         when (getGameResult) {
             is Ok -> {

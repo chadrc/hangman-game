@@ -72,4 +72,13 @@ class RestRouteTest {
             }
         }
     }
+
+    @Test
+    fun `Get game with invalid id returns 400`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Get, "/game/notanid").apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
 }
