@@ -53,21 +53,7 @@ fun Application.module(testing: Boolean = false) {
             resources("static")
         }
 
-        post("/start") {
-            call.respond(mapOf("message" to "Starting Game"))
-        }
-
-        get("/game") {
-            call.respond(mapOf("message" to "Fetching Game"))
-        }
-
-        post("/guess") {
-            call.respond(mapOf("message" to "Making Guess"))
-        }
-
-        post("/forfeit") {
-            call.respond(mapOf("message" to "Forfeiting Game"))
-        }
+        hangmanRestRoutes()
     }
 }
 
