@@ -4,6 +4,7 @@ import com.chadrc.hangman.errors.GameAlreadyCompleteError
 import com.chadrc.hangman.errors.GameNotFoundError
 import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
+import models.Guess
 
 class HangmanService {
     private val database = HangmanDatabase()
@@ -33,7 +34,7 @@ class HangmanService {
 
         database.createGuess(gameId, guess)
 
-        val guesses = database.getGuessesWithGameId(gameId)
+        val guesses = getAllGuessesForGameId(gameId)
 
         val word =
             database.getWordById(game.wordId) ?: return Error("Word (${game.wordId}) on Game (${game.id}) not found")
@@ -64,13 +65,25 @@ class HangmanService {
 
         database.createWordGuess(gameId, guess)
 
-        val guesses = database.getWordGuessesByGameId(gameId)
+        val guesses = getAllGuessesForGameId(gameId)
 
         val result = if (word.word == guess) {
             database.createWonGameResult(gameId, true)
         } else { null }
 
         return Ok(GameInfo(game, guesses, result))
+    }
+
+    private fun getAllGuessesForGameId(gameId: Int): List<Guess> {
+        val characterGuesses = database.getGuessesWithGameId(gameId)
+        val wordGuesses = database.getWordGuessesByGameId(gameId)
+
+        val list = mutableListOf<Guess>()
+
+        list.addAll(characterGuesses)
+        list.addAll(wordGuesses)
+
+        return list
     }
 
     fun forfeitGame(gameId: Int): Result<GameInfo> {

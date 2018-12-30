@@ -148,6 +148,34 @@ class HangmanServiceTest {
     }
 
     @Test
+    fun `Making character and word guesses results in guesses list with all guesses`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        hangmanService.makeGuess(startGameResult.result().game.id, 'b')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'l')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'n')
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "black")
+
+        val result = hangmanService.makeWordGuess(startGameResult.result().game.id, "brown") as Ok
+
+        assertEquals(5, result.result().guesses.size)
+    }
+
+    @Test
+    fun `Making character and word guesses results in guesses list with all guesses, character guess last`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        hangmanService.makeGuess(startGameResult.result().game.id, 'b')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'l')
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "black")
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "brown")
+
+        val result = hangmanService.makeGuess(startGameResult.result().game.id, 'n') as Ok
+
+        assertEquals(5, result.result().guesses.size)
+    }
+
+    @Test
     fun `Forfeiting has result on game info`() {
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
