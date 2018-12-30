@@ -109,7 +109,7 @@ class RestRouteTest {
     }
 
     @Test
-    fun `Make guess on game that does not exist return not found`() {
+    fun `Make guess on game that does not exist returns not found`() {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Post, "/guess") {
                 setBody(mapper.writeValueAsString(
