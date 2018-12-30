@@ -41,7 +41,7 @@ class HangmanService {
         // Check if every letter in the game's word has been guessed
         var guessedAllLetters = true
         word.word.forEach { c ->
-            if (guesses.find { it.guess == c } == null) {
+            if (guesses.find { it.guess == c.toString() } == null) {
                 guessedAllLetters = false
             }
         }

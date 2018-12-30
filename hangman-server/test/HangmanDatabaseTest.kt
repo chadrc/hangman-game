@@ -117,7 +117,7 @@ class HangmanDatabaseTest {
         val guess = database.createGuess(game.id, 'r')
 
         assertNotEquals(-1, guess.id)
-        assertEquals('r', guess.guess)
+        assertEquals("r", guess.guess)
     }
 
     @Test
@@ -143,6 +143,17 @@ class HangmanDatabaseTest {
         val guesses = database.getGuessesWithGameId(game.id)
 
         assertEquals(0, guesses.size)
+    }
+
+    @Test
+    fun createWordGuess() {
+        val word = database.getWord("panda")!!
+        val game = database.createGame(word.id, 10)
+
+        val guess = database.createWordGuess(game.id, "grizzly")
+
+        assertNotEquals(-1, guess.id)
+        assertEquals("grizzly", guess.guess)
     }
 
     @Test

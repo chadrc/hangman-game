@@ -66,7 +66,7 @@ class HangmanServiceTest {
         val guessResult = hangmanService.makeGuess(startGameResult.result().game.id, 'c')
 
         if (guessResult is Ok) {
-            assertNotNull(guessResult.result().guesses.find { it.guess == 'c' })
+            assertNotNull(guessResult.result().guesses.find { it.guess == "c" })
             assertNull(guessResult.result().result)
         } else {
             fail((guessResult as Error).message)

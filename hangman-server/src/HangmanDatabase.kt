@@ -138,7 +138,27 @@ class HangmanDatabase {
         resultSet.close()
         statement.close()
 
-        Guess(id, gameId, guess)
+        Guess(id, gameId, guess.toString())
+    }
+
+    fun createWordGuess(gameId: Int, word: String): Guess = withConnection {
+        val statement = it.prepareStatement("""
+            INSERT INTO word_guesses (game_id, guess)
+            VALUES(?, ?)
+        """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
+
+        statement.setInt(1, gameId)
+        statement.setString(2, word)
+
+        statement.executeUpdate()
+
+        val resultSet = statement.generatedKeys
+
+        resultSet.next()
+
+        val id = resultSet.getInt("id")
+
+        Guess(id, gameId, word)
     }
 
     fun getRandomWord(): Word? = withConnection {
@@ -164,7 +184,7 @@ class HangmanDatabase {
             val id = resultSet.getInt("id")
             val guessStr = resultSet.getString("guess")
 
-            guesses.add(Guess(id, gameId, guessStr[0]))
+            guesses.add(Guess(id, gameId, guessStr))
         }
 
         resultSet.close()
