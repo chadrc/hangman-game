@@ -125,6 +125,19 @@ class HangmanServiceTest {
     }
 
     @Test
+    fun `Make correct word guess`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        val word = hangmanDatabase.getWordById(startGameResult.result().game.wordId)!!
+
+        val guessResult = hangmanService.makeWordGuess(startGameResult.result().game.id, word.word) as Ok
+
+        assertNotNull(guessResult.result().guesses.find { it.guess == word.word })
+        assertNotNull(guessResult.result().result)
+        assertTrue(guessResult.result().result?.won!!)
+    }
+
+    @Test
     fun `Forfeiting has result on game info`() {
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game

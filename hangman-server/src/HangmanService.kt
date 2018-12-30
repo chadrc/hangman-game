@@ -57,6 +57,22 @@ class HangmanService {
         return Ok(GameInfo(game, guesses, result))
     }
 
+    fun makeWordGuess(gameId: Int, guess: String): Result<GameInfo> {
+        val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
+
+        val word = database.getWordById(game.wordId) ?: return Error("Word (${game.wordId}) on Game (${game.id}) not found")
+
+        database.createWordGuess(gameId, guess)
+
+        val guesses = database.getWordGuessesByGameId(gameId)
+
+        val result = if (word.word == guess) {
+            database.createWonGameResult(gameId, true)
+        } else { null }
+
+        return Ok(GameInfo(game, guesses, result))
+    }
+
     fun forfeitGame(gameId: Int): Result<GameInfo> {
         val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
 
