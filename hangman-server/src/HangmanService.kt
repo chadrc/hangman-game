@@ -1,18 +1,20 @@
 package com.chadrc.hangman
 
+import com.chadrc.hangman.errors.GameNotFoundError
+import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
 
 class HangmanService {
     private val database = HangmanDatabase()
 
     fun startGame(): Result<GameInfo> {
-        val word = database.getRandomWord() ?: return Error("No words available")
+        val word = database.getRandomWord() ?: return NoWordsAvailableError()
         val game = database.createGame(word.id, 10)
         return Ok(GameInfo(game))
     }
 
     fun getGame(id: Int): Result<GameInfo> {
-        val game = database.getGame(id) ?: return Error("Game ($id) not found")
+        val game = database.getGame(id) ?: return GameNotFoundError(id)
         val guesses = database.getGuessesWithGameId(id)
         val result = database.getGameResultWithGameId(id)
 
@@ -20,7 +22,7 @@ class HangmanService {
     }
 
     fun makeGuess(gameId: Int, guess: Char): Result<GameInfo> {
-        val game = database.getGame(gameId) ?: return Error("Game ($gameId) not found")
+        val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
 
         database.createGuess(gameId, guess)
 

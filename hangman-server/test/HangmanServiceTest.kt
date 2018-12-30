@@ -1,5 +1,7 @@
 package com.chadrc.hangman
 
+import com.chadrc.hangman.errors.GameNotFoundError
+import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
 import kotlin.test.*
 
@@ -23,7 +25,7 @@ class HangmanServiceTest {
     fun `Starting game with no words available returns Error`() {
         utils.emptyAll()
         val gameInfoResult = hangmanService.startGame()
-        assertTrue(gameInfoResult is Error)
+        assertTrue(gameInfoResult is NoWordsAvailableError)
     }
 
     @Test
@@ -40,6 +42,15 @@ class HangmanServiceTest {
     }
 
     @Test
+    fun `Getting a game that does not exist returns an Error`() {
+        utils.basicDataSetup()
+
+        val getGameResult = hangmanService.getGame(10)
+
+        assertTrue(getGameResult is GameNotFoundError)
+    }
+
+    @Test
     fun makeGuess() {
         utils.basicDataSetup()
 
@@ -53,6 +64,15 @@ class HangmanServiceTest {
         } else {
             fail((guessResult as Error).message)
         }
+    }
+
+    @Test
+    fun `Making a guess on game that does not exist returns an Error`() {
+        utils.basicDataSetup()
+
+        val guessResult = hangmanService.makeGuess(10, 'c')
+
+        assertTrue(guessResult is GameNotFoundError)
     }
 
     @Test

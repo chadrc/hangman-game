@@ -6,4 +6,4 @@ class Ok<T>(private val obj: T) : Result<T>() {
     fun result(): T = obj
 }
 
-class Error<T>(val message: String = ""): Result<T>()
+open class Error<T>(val message: String = ""): Result<T>()
