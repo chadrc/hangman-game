@@ -60,6 +60,11 @@ class HangmanService {
     fun forfeitGame(gameId: Int): Result<GameInfo> {
         val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
 
+        val existingResult = database.getGameResultWithGameId(gameId)
+        if (existingResult != null) {
+            return GameAlreadyCompleteError(gameId)
+        }
+
         val guesses = database.getGuessesWithGameId(gameId)
 
         val result = database.createForfeitGameResult(gameId, true)

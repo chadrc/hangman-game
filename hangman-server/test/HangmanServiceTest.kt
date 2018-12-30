@@ -139,4 +139,26 @@ class HangmanServiceTest {
         assertNotNull(info.result)
         assertTrue(info.result?.forfeit!!)
     }
+
+    @Test
+    fun `Forfeiting game that is does not exists returns Error`() {
+        utils.basicDataSetup()
+
+        val forfeitResult = hangmanService.forfeitGame(10)
+
+        assertTrue(forfeitResult is GameNotFoundError)
+    }
+
+    @Test
+    fun `Forfeiting game that is already complete returns Error`() {
+        utils.basicDataSetup()
+
+        val startGameResult = hangmanService.startGame() as Ok
+        val game = startGameResult.result().game
+
+        hangmanService.forfeitGame(game.id) as Ok
+        val forfeitResult = hangmanService.forfeitGame(game.id)
+
+        assertTrue(forfeitResult is GameAlreadyCompleteError)
+    }
 }
