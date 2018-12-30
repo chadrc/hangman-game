@@ -12,7 +12,7 @@ class HangmanService {
         return Ok(GameInfo(game))
     }
 
-    fun getGame(id: Int): Result<GameInfo?> {
+    fun getGame(id: Int): Result<GameInfo> {
         val game = database.getGame(id) ?: return Error("Game not found")
         val guesses = database.getGuessesWithGameId(id)
         val result = database.getGameResultWithGameId(id)
