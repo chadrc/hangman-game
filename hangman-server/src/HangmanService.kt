@@ -32,6 +32,13 @@ class HangmanService {
             return GameAlreadyCompleteError(game.id)
         }
 
+        val currentGuesses = database.getGuessesWithGameId(gameId)
+
+        if (currentGuesses.find { it.guess == guess.toString() } != null) {
+            // No change to game state
+            return Ok(GameInfo(game, currentGuesses))
+        }
+
         database.createGuess(gameId, guess)
 
         val guesses = getAllGuessesForGameId(gameId)
@@ -62,6 +69,12 @@ class HangmanService {
 
     fun makeWordGuess(gameId: Int, guess: String): Result<GameInfo> {
         val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
+
+        val currentGuesses = database.getWordGuessesByGameId(gameId)
+
+        if (currentGuesses.find { it.guess == guess } != null) {
+            return Ok(GameInfo(game, currentGuesses))
+        }
 
         val word = database.getWordById(game.wordId) ?: return Error("Word (${game.wordId}) on Game (${game.id}) not found")
 

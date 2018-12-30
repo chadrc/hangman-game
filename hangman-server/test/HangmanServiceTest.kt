@@ -74,6 +74,16 @@ class HangmanServiceTest {
     }
 
     @Test
+    fun `Making duplicate character guess does not increase guess count`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        hangmanService.makeGuess(startGameResult.result().game.id, 'c')
+        val guessResult = hangmanService.makeGuess(startGameResult.result().game.id, 'c') as Ok
+
+        assertEquals(1, guessResult.result().guesses.size)
+    }
+
+    @Test
     fun `Making a guess on game that does not exist returns an Error`() {
         val guessResult = hangmanService.makeGuess(10, 'c')
 
@@ -151,6 +161,16 @@ class HangmanServiceTest {
 
         assertNotNull(guessResult.result().guesses.find { it.guess == "brown" })
         assertNull(guessResult.result().result)
+    }
+
+    @Test
+    fun `Making duplicate word guess does not increase guess count`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "brown")
+        val guessResult = hangmanService.makeWordGuess(startGameResult.result().game.id, "brown") as Ok
+
+        assertEquals(1, guessResult.result().guesses.size)
     }
 
     @Test
