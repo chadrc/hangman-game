@@ -5,11 +5,13 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
+import io.ktor.server.testing.setBody
 import io.ktor.server.testing.withTestApplication
 import io.ktor.util.KtorExperimentalAPI
 import responses.GameResponse
 import org.junit.After
 import org.junit.Before
+import requests.GuessRequest
 import kotlin.test.*
 
 @KtorExperimentalAPI
@@ -78,6 +80,30 @@ class RestRouteTest {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/game/notanid").apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun `Make guess on started game`() {
+        val game = (hangmanService.startGame() as Ok).result().game
+
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString(
+                    GuessRequest(game.id, "c")
+                ))
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+
+                val content = response.content ?: fail("No content in response")
+                val data: GameResponse = mapper.readValue(content)
+
+                assertNotNull(data.game)
+                assertNotNull(data.guesses)
+                assertEquals(1, data.guesses.size)
+                assertNull(data.result)
+                assertNull(data.word)
             }
         }
     }

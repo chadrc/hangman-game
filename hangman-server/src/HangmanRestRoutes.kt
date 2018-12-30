@@ -3,11 +3,13 @@ package com.chadrc.hangman
 import com.chadrc.hangman.errors.GameNotFoundError
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import models.GameInfo
+import requests.GuessRequest
 import responses.GameResponse
 
 val hangmanService = HangmanService()
@@ -50,7 +52,23 @@ fun Routing.hangmanRestRoutes() {
     }
 
     post("/guess") {
-        call.respond(mapOf("message" to "Making Guess"))
+        val data = call.receive<GuessRequest>()
+
+        val makeGuessResult = when {
+            data.guess.length == 1 -> hangmanService.makeGuess(data.gameId, data.guess[0])
+            data.guess.isNotEmpty() -> hangmanService.makeWordGuess(data.gameId, data.guess)
+            else -> null
+        }
+
+        when (makeGuessResult) {
+            is Ok -> {
+                val newGameInfo = makeGuessResult.result()
+                val word = if (newGameInfo.isComplete()) newGameInfo.word else null
+                call.respond(GameResponse(newGameInfo.game, word, newGameInfo.guesses, newGameInfo.result))
+            }
+            is GameNotFoundError -> call.respond(HttpStatusCode.NotFound)
+            else -> call.respond(HttpStatusCode.InternalServerError, (makeGuessResult as Error).message)
+        }
     }
 
     post("/forfeit") {
