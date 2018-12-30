@@ -1,5 +1,6 @@
 package com.chadrc.hangman
 
+import models.GameInfo
 import kotlin.test.*
 
 class HangmanServiceTest {
@@ -54,14 +55,21 @@ class HangmanServiceTest {
         }
     }
 
-//    @Test
-//    fun makeGuessesUntilWon() {
-//        utils.basicDataSetup()
-//
-//        val startGameResult = hangmanService.startGame() as Ok
-//
-//        val word = hangmanDatabase.getW
-//
-//        val guessResult = startGameResult.result().game
-//    }
+    @Test
+    fun makeGuessesUntilWon() {
+        utils.basicDataSetup()
+
+        val startGameResult = hangmanService.startGame() as Ok
+        val game = startGameResult.result().game
+
+        val word = hangmanDatabase.getWordById(game.wordId)!!
+
+        var guessResult: GameInfo? = null
+        for (c in word.word) {
+            guessResult = (hangmanService.makeGuess(game.id, c) as Ok).result()
+        }
+
+        assertNotNull(guessResult?.result)
+        assertTrue(guessResult?.result?.won!!)
+    }
 }
