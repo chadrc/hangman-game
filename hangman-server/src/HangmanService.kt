@@ -3,6 +3,7 @@ package com.chadrc.hangman
 import com.chadrc.hangman.errors.GameAlreadyCompleteError
 import com.chadrc.hangman.errors.GameNotFoundError
 import com.chadrc.hangman.errors.NoWordsAvailableError
+import com.chadrc.hangman.errors.GameWordNotFound
 import models.GameInfo
 import models.Guess
 
@@ -12,15 +13,16 @@ class HangmanService {
     fun startGame(): Result<GameInfo> {
         val word = database.getRandomWord() ?: return NoWordsAvailableError()
         val game = database.createGame(word.id, 10)
-        return Ok(GameInfo(game))
+        return Ok(GameInfo(game, word.word))
     }
 
     fun getGame(id: Int): Result<GameInfo> {
         val game = database.getGame(id) ?: return GameNotFoundError(id)
         val guesses = getAllGuessesForGameId(id)
         val result = database.getGameResultWithGameId(id)
+        val word = database.getWordById(game.wordId) ?: return GameWordNotFound(id)
 
-        return Ok(GameInfo(game, guesses, result))
+        return Ok(GameInfo(game, word.word, guesses, result))
     }
 
     fun makeGuess(gameId: Int, guess: Char): Result<GameInfo> {
@@ -32,11 +34,13 @@ class HangmanService {
             return GameAlreadyCompleteError(game.id)
         }
 
+        val word = database.getWordById(game.wordId) ?: return GameWordNotFound(gameId)
+
         val currentGuesses = database.getGuessesWithGameId(gameId)
 
         if (currentGuesses.find { it.guess == guess.toString() } != null) {
             // No change to game state
-            return Ok(GameInfo(game, currentGuesses))
+            return Ok(GameInfo(game, word.word, currentGuesses))
         }
 
         database.createGuess(gameId, guess)
@@ -44,9 +48,6 @@ class HangmanService {
         val guesses = getAllGuessesForGameId(gameId)
 
         val characterGuesses = guesses.filter { it.guess.length == 1 }
-
-        val word =
-            database.getWordById(game.wordId) ?: return Error("Word (${game.wordId}) on Game (${game.id}) not found")
 
         // Check if every letter in the game's word has been guessed
         var guessedAllLetters = true
@@ -64,7 +65,7 @@ class HangmanService {
             else -> null
         }
 
-        return Ok(GameInfo(game, guesses, result))
+        return Ok(GameInfo(game, word.word, guesses, result))
     }
 
     fun makeWordGuess(gameId: Int, guess: String): Result<GameInfo> {
@@ -76,13 +77,13 @@ class HangmanService {
             return GameAlreadyCompleteError(gameId)
         }
 
+        val word = database.getWordById(game.wordId) ?: return GameWordNotFound(gameId)
+
         val currentGuesses = database.getWordGuessesByGameId(gameId)
 
         if (currentGuesses.find { it.guess == guess } != null) {
-            return Ok(GameInfo(game, currentGuesses))
+            return Ok(GameInfo(game, word.word, currentGuesses))
         }
-
-        val word = database.getWordById(game.wordId) ?: return Error("Word (${game.wordId}) on Game (${game.id}) not found")
 
         database.createWordGuess(gameId, guess)
 
@@ -92,7 +93,7 @@ class HangmanService {
             database.createWonGameResult(gameId, true)
         } else { null }
 
-        return Ok(GameInfo(game, guesses, result))
+        return Ok(GameInfo(game, word.word, guesses, result))
     }
 
     fun forfeitGame(gameId: Int): Result<GameInfo> {
@@ -103,11 +104,13 @@ class HangmanService {
             return GameAlreadyCompleteError(gameId)
         }
 
+        val word = database.getWordById(game.wordId) ?: return GameWordNotFound(gameId)
+
         val guesses = getAllGuessesForGameId(gameId)
 
         val result = database.createForfeitGameResult(gameId, true)
 
-        return Ok(GameInfo(game, guesses, result))
+        return Ok(GameInfo(game, word.word, guesses, result))
     }
 
     private fun getAllGuessesForGameId(gameId: Int): List<Guess> {

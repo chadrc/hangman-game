@@ -95,14 +95,14 @@ class HangmanServiceTest {
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
 
-        val word = hangmanDatabase.getWordById(game.wordId)!!
+        val word = startGameResult.result().word
 
         var guessResult: GameInfo? = null
 
         // If a word has one letter multiple times
         // one guess of that letter will fill in both spots during won calculation
         val uniqueCharacters = mutableSetOf<Char>()
-        word.word.forEach { uniqueCharacters.add(it) }
+        word.forEach { uniqueCharacters.add(it) }
 
         for (c in uniqueCharacters) {
             guessResult = (hangmanService.makeGuess(game.id, c) as Ok).result()
