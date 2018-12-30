@@ -70,6 +70,12 @@ class HangmanService {
     fun makeWordGuess(gameId: Int, guess: String): Result<GameInfo> {
         val game = database.getGame(gameId) ?: return GameNotFoundError(gameId)
 
+        val currentResult = database.getGameResultWithGameId(gameId)
+
+        if (currentResult != null) {
+            return GameAlreadyCompleteError(gameId)
+        }
+
         val currentGuesses = database.getWordGuessesByGameId(gameId)
 
         if (currentGuesses.find { it.guess == guess } != null) {

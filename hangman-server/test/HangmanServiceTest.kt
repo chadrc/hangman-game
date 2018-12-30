@@ -164,6 +164,25 @@ class HangmanServiceTest {
     }
 
     @Test
+    fun `Making word guess on game that does not exists returns Error`() {
+        val guessResult = hangmanService.makeWordGuess(10, "brown")
+
+        assertTrue(guessResult is GameNotFoundError)
+    }
+
+    @Test
+    fun `Making word guess on already complete game returns Error`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        val word = hangmanDatabase.getWordById(startGameResult.result().game.wordId)!!
+
+        hangmanService.makeWordGuess(startGameResult.result().game.id, word.word)
+        val guessResult = hangmanService.makeWordGuess(startGameResult.result().game.id, word.word)
+
+        assertTrue(guessResult is GameAlreadyCompleteError)
+    }
+
+    @Test
     fun `Making duplicate word guess does not increase guess count`() {
         val startGameResult = hangmanService.startGame() as Ok
 
