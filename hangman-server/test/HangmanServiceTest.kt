@@ -72,4 +72,20 @@ class HangmanServiceTest {
         assertNotNull(guessResult?.result)
         assertTrue(guessResult?.result?.won!!)
     }
+
+    @Test
+    fun makeGuessesUntilOut() {
+        utils.basicDataSetup()
+
+        val startGameResult = hangmanService.startGame() as Ok
+        val game = startGameResult.result().game
+
+        var guessResult: GameInfo? = null
+        for (c in listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j')) {
+            guessResult = (hangmanService.makeGuess(game.id, c) as Ok).result()
+        }
+
+        assertNotNull(guessResult?.result)
+        assertFalse(guessResult?.result?.won!!)
+    }
 }

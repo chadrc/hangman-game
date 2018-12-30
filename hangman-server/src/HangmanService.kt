@@ -38,9 +38,12 @@ class HangmanService {
         }
 
         // Game is won if all letters are guessed
-        val result = if (guessedAllLetters) {
-            database.createWonGameResult(game.id, true)
-        } else { null }
+        // Game is lost if maximum guesses has been reached
+        val result = when {
+            guessedAllLetters -> database.createWonGameResult(game.id, true)
+            guesses.size >= game.guessesAllowed -> database.createWonGameResult(game.id, false)
+            else -> null
+        }
 
         return Ok(GameInfo(game, guesses, result))
     }
