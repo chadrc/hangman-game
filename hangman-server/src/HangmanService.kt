@@ -36,13 +36,15 @@ class HangmanService {
 
         val guesses = getAllGuessesForGameId(gameId)
 
+        val characterGuesses = guesses.filter { it.guess.length == 1 }
+
         val word =
             database.getWordById(game.wordId) ?: return Error("Word (${game.wordId}) on Game (${game.id}) not found")
 
         // Check if every letter in the game's word has been guessed
         var guessedAllLetters = true
         word.word.forEach { c ->
-            if (guesses.find { it.guess == c.toString() } == null) {
+            if (characterGuesses.find { it.guess == c.toString() } == null) {
                 guessedAllLetters = false
             }
         }
@@ -51,7 +53,7 @@ class HangmanService {
         // Game is lost if maximum guesses has been reached
         val result = when {
             guessedAllLetters -> database.createWonGameResult(game.id, true)
-            guesses.size >= game.guessesAllowed -> database.createWonGameResult(game.id, false)
+            characterGuesses.size >= game.guessesAllowed -> database.createWonGameResult(game.id, false)
             else -> null
         }
 

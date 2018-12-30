@@ -88,7 +88,13 @@ class HangmanServiceTest {
         val word = hangmanDatabase.getWordById(game.wordId)!!
 
         var guessResult: GameInfo? = null
-        for (c in word.word) {
+
+        // If a word has one letter multiple times
+        // one guess of that letter will fill in both spots during won calculation
+        val uniqueCharacters = mutableSetOf<Char>()
+        word.word.forEach { uniqueCharacters.add(it) }
+
+        for (c in uniqueCharacters) {
             guessResult = (hangmanService.makeGuess(game.id, c) as Ok).result()
         }
 
@@ -145,6 +151,45 @@ class HangmanServiceTest {
 
         assertNotNull(guessResult.result().guesses.find { it.guess == "brown" })
         assertNull(guessResult.result().result)
+    }
+
+    @Test
+    fun `Word guesses do not count toward guess limit on game, word guess last`() {
+        val startGameResult = hangmanService.startGame() as Ok
+        val game = startGameResult.result().game
+
+        // make 8 character guesses, 2 less than limit
+        for (c in listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')) {
+            hangmanService.makeGuess(game.id, c)
+        }
+
+        // make 3 word guesses, putting total at 11, 1 above limit
+        hangmanService.makeWordGuess(game.id, "brown")
+        hangmanService.makeWordGuess(game.id, "black")
+        val guessResult = hangmanService.makeWordGuess(game.id, "koala") as Ok
+
+        assertNull(guessResult.result().result)
+        assertEquals(11, guessResult.result().guesses.size)
+    }
+
+    @Test
+    fun `Word guesses do not count toward guess limit on game, character guess last`() {
+        val startGameResult = hangmanService.startGame() as Ok
+        val game = startGameResult.result().game
+
+        // make 3 word guesses
+        hangmanService.makeWordGuess(game.id, "brown")
+        hangmanService.makeWordGuess(game.id, "black")
+        hangmanService.makeWordGuess(game.id, "koala")
+
+        // make 8 character guesses, total is 11
+        var gameInfo: GameInfo? = null
+        for (c in listOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')) {
+            gameInfo = (hangmanService.makeGuess(game.id, c) as Ok).result()
+        }
+
+        assertNull(gameInfo?.result)
+        assertEquals(11, gameInfo!!.guesses.size)
     }
 
     @Test
