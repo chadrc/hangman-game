@@ -98,7 +98,7 @@ class HangmanDatabase {
 
     fun createGuess(gameId: Int, guess: Char): Guess {
         val statement = connection.prepareStatement("""
-            INSERT INTO guesses (game_id, guess)
+            INSERT INTO character_guesses (game_id, guess)
             VALUES (?, ?)
         """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
 
@@ -129,7 +129,7 @@ class HangmanDatabase {
 
     fun getGuessesWithGameId(gameId: Int): List<Guess> {
         val statement = connection.prepareStatement("""
-            SELECT * FROM guesses WHERE game_id=?
+            SELECT * FROM character_guesses WHERE game_id=?
         """.trimIndent())
 
         statement.setInt(1, gameId)

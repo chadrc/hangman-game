@@ -33,14 +33,17 @@ class TestUtils {
 
     fun emptyAll() {
         emptyGameResults()
-        emptyGuesses()
+        emptyCharacterGuesses()
+        emptyWordGuesses()
         emptyGames()
         emptyWords()
     }
 
     fun emptyGameResults() = emptyTable("game_results")
 
-    fun emptyGuesses() = emptyTable("guesses")
+    fun emptyCharacterGuesses() = emptyTable("character_guesses")
+
+    fun emptyWordGuesses() = emptyTable("word_guesses")
 
     fun emptyGames() = emptyTable("games")
 

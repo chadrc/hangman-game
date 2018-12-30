@@ -10,10 +10,16 @@ CREATE TABLE games (
   guesses_allowed INTEGER NOT NULL
 );
 
-CREATE TABLE guesses (
+CREATE TABLE character_guesses (
   id SERIAL PRIMARY KEY,
   game_id INTEGER NOT NULL REFERENCES games(id),
   guess CHAR NOT NULL
+);
+
+CREATE TABLE word_guesses (
+  id SERIAL PRIMARY KEY,
+  game_id INTEGER NOT NULL REFERENCES games(id),
+  guess VARCHAR(255)
 );
 
 CREATE TABLE game_results (
