@@ -107,4 +107,17 @@ class RestRouteTest {
             }
         }
     }
+
+    @Test
+    fun `Make guess on game that does not exist return not found`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString(
+                    GuessRequest(10, "c")
+                ))
+            }.apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
+            }
+        }
+    }
 }
