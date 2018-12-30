@@ -11,6 +11,35 @@ class HangmanDatabase {
         "jdbc:postgresql://localhost/postgres?user=postgres&password=password"
     )
 
+    fun createWord(word: String): Word {
+        val statement = connection.prepareStatement("""
+            INSERT INTO words (word)
+            VALUES (?)
+        """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
+
+        statement.setString(1, word)
+
+        statement.executeUpdate()
+
+        val resultSet = statement.generatedKeys
+
+        resultSet.next()
+
+        val id = resultSet.getInt("id")
+
+        return Word(id, word)
+    }
+
+    fun getWordById(id: Int): Word? {
+        val statement = connection.prepareStatement("""
+            SELECT * FROM words WHERE id=?
+        """.trimIndent())
+
+        statement.setInt(1, id)
+
+        return executeAndGetFirstWord(statement)
+    }
+
     fun createGame(wordId: Int, guessesAllowed: Int): Game {
         val statement = connection.prepareStatement("""
             INSERT INTO games (word_id, guesses_allowed)

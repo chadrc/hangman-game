@@ -8,6 +8,15 @@ class HangmanDatabaseTest {
     private val utils = TestUtils()
 
     @Test
+    fun createWord() {
+        utils.basicDataSetup()
+        val word = database.createWord("brown")
+
+        assertNotEquals(-1, word.id)
+        assertEquals("brown", word.word)
+    }
+
+    @Test
     fun getRandomWord() {
         utils.basicDataSetup()
 
@@ -39,6 +48,18 @@ class HangmanDatabaseTest {
 
         val word = database.getWord("black")
         assertNull(word)
+    }
+
+    @Test
+    fun getWordById() {
+        utils.basicDataSetup()
+
+        val createdWord = database.createWord("brown")
+
+        val word = database.getWordById(createdWord.id)!!
+
+        assertEquals(createdWord.id, word.id)
+        assertEquals("brown", word.word)
     }
 
     @Test

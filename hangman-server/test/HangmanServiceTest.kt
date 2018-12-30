@@ -4,6 +4,7 @@ import kotlin.test.*
 
 class HangmanServiceTest {
     private val hangmanService = HangmanService()
+    private val hangmanDatabase = HangmanDatabase()
     private val utils = TestUtils()
 
     @Test
@@ -52,4 +53,15 @@ class HangmanServiceTest {
             fail((guessResult as Error).message)
         }
     }
+
+//    @Test
+//    fun makeGuessesUntilWon() {
+//        utils.basicDataSetup()
+//
+//        val startGameResult = hangmanService.startGame() as Ok
+//
+//        val word = hangmanDatabase.getW
+//
+//        val guessResult = startGameResult.result().game
+//    }
 }
