@@ -55,11 +55,20 @@ class RestRouteTest {
 
                 val content = response.content ?: fail("No content in response")
                 val data: GameResponse = mapper.readValue(content)
-                
+
                 assertNotNull(data.game)
                 assertNotNull(data.guesses)
                 assertNull(data.result)
                 assertNull(data.word)
+            }
+        }
+    }
+
+    @Test
+    fun `Get game that does not exist returns 404`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Get, "/game/1").apply {
+                assertEquals(HttpStatusCode.NotFound, response.status())
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.chadrc.hangman
 
+import com.chadrc.hangman.errors.GameNotFoundError
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
@@ -33,12 +34,14 @@ fun Routing.hangmanRestRoutes() {
 
         val getGameResult = hangmanService.getGame(gameId!!)
 
-        if (getGameResult is Ok) {
-            val gameInfo = getGameResult.result()
-            val word = if (gameInfo.isComplete()) gameInfo.word else null
-            call.respond(GameResponse(gameInfo.game, word, gameInfo.guesses, gameInfo.result))
-        } else {
-            call.respond(HttpStatusCode.InternalServerError, (getGameResult as Error).message)
+        when (getGameResult) {
+            is Ok -> {
+                val gameInfo = getGameResult.result()
+                val word = if (gameInfo.isComplete()) gameInfo.word else null
+                call.respond(GameResponse(gameInfo.game, word, gameInfo.guesses, gameInfo.result))
+            }
+            is GameNotFoundError -> call.respond(HttpStatusCode.NotFound)
+            else -> call.respond(HttpStatusCode.InternalServerError, (getGameResult as Error).message)
         }
     }
 
