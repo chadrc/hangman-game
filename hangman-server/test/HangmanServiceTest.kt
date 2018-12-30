@@ -20,7 +20,7 @@ class HangmanServiceTest {
     }
 
     @Test
-    fun startGameWithNoAvailableWords() {
+    fun `Starting game with no words available returns Error`() {
         utils.emptyAll()
         val gameInfoResult = hangmanService.startGame()
         assertTrue(gameInfoResult is Error)
