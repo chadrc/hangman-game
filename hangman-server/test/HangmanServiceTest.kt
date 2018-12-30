@@ -32,11 +32,11 @@ class HangmanServiceTest {
 
         val startGameResult = hangmanService.startGame()
 
-        val gameInfo = hangmanService.getGame(startGameResult.result()!!.game.id)
+        val getGameResult = hangmanService.getGame(startGameResult.result()!!.game.id)
 
-        assertNotNull(gameInfo)
-        assertEquals(0, gameInfo.guesses.size)
-        assertNull(gameInfo.result)
+        assertNotNull(getGameResult)
+        assertEquals(0, getGameResult.result()!!.guesses.size)
+        assertNull(getGameResult.result()!!.result)
     }
 
     @Test
