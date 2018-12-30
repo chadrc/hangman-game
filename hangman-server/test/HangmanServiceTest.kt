@@ -176,6 +176,21 @@ class HangmanServiceTest {
     }
 
     @Test
+    fun `Get game with both character and word guesses returns all guesses`() {
+        val startGameResult = hangmanService.startGame() as Ok
+
+        hangmanService.makeGuess(startGameResult.result().game.id, 'b')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'l')
+        hangmanService.makeGuess(startGameResult.result().game.id, 'n')
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "black")
+        hangmanService.makeWordGuess(startGameResult.result().game.id, "brown")
+
+        val getGameResult = hangmanService.getGame(startGameResult.result().game.id) as Ok
+
+        assertEquals(5, getGameResult.result().guesses.size)
+    }
+
+    @Test
     fun `Forfeiting has result on game info`() {
         val startGameResult = hangmanService.startGame() as Ok
         val game = startGameResult.result().game
