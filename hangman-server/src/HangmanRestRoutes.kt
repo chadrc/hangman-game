@@ -1,9 +1,11 @@
 package com.chadrc.hangman
 
 import com.chadrc.hangman.errors.GameNotFoundError
+import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
+import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -16,6 +18,9 @@ import responses.GameResponse
 val hangmanService = HangmanService()
 
 fun GameInfo.isComplete() = result?.won != null || result?.forfeit != null
+
+suspend inline fun <reified T : Any> ApplicationCall.tryReceive(): T? =
+    try { receiveOrNull() } catch (exception: Exception) { null }
 
 fun Routing.hangmanRestRoutes() {
     post("/start") {
@@ -53,9 +58,9 @@ fun Routing.hangmanRestRoutes() {
     }
 
     post("/guess") {
-        val data = call.receive<GuessRequest>()
+        val data = call.tryReceive<GuessRequest>()
 
-        if (data.gameId == -1) {
+        if (data == null || data.gameId == -1) {
             call.respond(HttpStatusCode.BadRequest)
             return@post
         }
@@ -83,7 +88,12 @@ fun Routing.hangmanRestRoutes() {
     }
 
     post("/forfeit") {
-        val data = call.receive<ForfeitRequest>()
+        val data = call.tryReceive<ForfeitRequest>()
+
+        if (data == null || data.gameId == -1) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
 
         val forfeitResult = hangmanService.forfeitGame(data.gameId)
 

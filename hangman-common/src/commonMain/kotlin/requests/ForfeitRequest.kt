@@ -1,3 +1,3 @@
 package requests
 
-data class ForfeitRequest(val gameId: Int)
+data class ForfeitRequest(val gameId: Int = -1)

@@ -166,6 +166,17 @@ class RestRouteTest {
     }
 
     @Test
+    fun `Make guess with no parameters returns bad request`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString("{}"))
+            }.apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
+
+    @Test
     fun `Make forfeit request on started game`() {
         val game = (hangmanService.startGame() as Ok).result().game
 
@@ -183,6 +194,28 @@ class RestRouteTest {
             assertNotNull(data.guesses)
             assertNotNull(data.result)
             assertNotNull(data.word)
+        }
+    }
+
+    @Test
+    fun `Make forfeit request on game that does not exist returns not found`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/forfeit") {
+                setBody(mapper.writeValueAsString(ForfeitRequest(1)))
+            }
+        }.apply {
+            assertEquals(HttpStatusCode.NotFound, response.status())
+        }
+    }
+
+    @Test
+    fun `Make forfeit request with no gameId returns bad request`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/forfeit") {
+                setBody(mapper.writeValueAsString("{}"))
+            }
+        }.apply {
+            assertEquals(HttpStatusCode.BadRequest, response.status())
         }
     }
 }
