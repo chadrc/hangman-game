@@ -17,7 +17,7 @@ class HangmanDatabase {
         config.dataSourceClassName = "org.postgresql.ds.PGSimpleDataSource"
         config.username = "postgres"
         config.password = "password"
-        config.maximumPoolSize = 5
+        config.maximumPoolSize = 10
 
         datasource = HikariDataSource(config)
     }
