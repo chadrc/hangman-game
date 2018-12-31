@@ -8,12 +8,27 @@ fun HEAD.scriptAsset(name: String) {
     }
 }
 
+fun HEAD.cssLink(uri: String) {
+    link {
+        href = uri
+        rel = "stylesheet"
+        type = "text/css"
+    }
+}
+
 fun HTML.indexPage() {
     head {
-        link {
-            href = "/styles.css"
-            rel = "stylesheet"
-            type = "text/css"
+        meta {
+            name = "viewport"
+            content = "width=device-width, initial-scale=1"
+        }
+
+        cssLink("https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.css")
+        cssLink("/styles.css")
+
+        script {
+            defer = true
+            src = "https://use.fontawesome.com/releases/v5.3.1/js/all.js"
         }
 
         scriptAsset("kotlin")
