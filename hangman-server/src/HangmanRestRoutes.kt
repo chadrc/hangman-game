@@ -15,14 +15,12 @@ import requests.ForfeitRequest
 import requests.GuessRequest
 import responses.GameResponse
 
-val hangmanService = HangmanService()
-
 fun GameInfo.isComplete() = result?.won != null || result?.forfeit != null
 
 suspend inline fun <reified T : Any> ApplicationCall.tryReceive(): T? =
     try { receiveOrNull() } catch (exception: Exception) { null }
 
-fun Routing.hangmanRestRoutes() {
+fun Routing.hangmanRestRoutes(hangmanService: HangmanService) {
     post("/start") {
         val startGameResult = hangmanService.startGame()
 

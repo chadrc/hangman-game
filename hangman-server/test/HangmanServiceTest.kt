@@ -11,8 +11,8 @@ import kotlin.test.*
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HangmanServiceTest {
-    private val hangmanService = HangmanService()
     private val hangmanDatabase = HangmanDatabase()
+    private val hangmanService = HangmanService(hangmanDatabase)
     private val utils = TestUtils()
 
     @Before
@@ -24,7 +24,6 @@ class HangmanServiceTest {
     fun cleanUp() {
         utils.emptyAll()
         hangmanDatabase.close()
-        hangmanService.close()
         utils.close()
     }
 

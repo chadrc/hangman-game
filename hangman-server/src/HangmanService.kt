@@ -7,13 +7,7 @@ import com.chadrc.hangman.errors.GameWordNotFound
 import models.GameInfo
 import models.Guess
 
-class HangmanService {
-    private val database = HangmanDatabase()
-
-    fun close() {
-        database.close()
-    }
-
+class HangmanService(private val database: HangmanDatabase = HangmanDatabase()) {
     fun startGame(): Result<GameInfo> {
         val word = database.getRandomWord() ?: return NoWordsAvailableError()
         val game = database.createGame(word.id, 10)
