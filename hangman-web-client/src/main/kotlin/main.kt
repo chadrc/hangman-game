@@ -20,7 +20,8 @@ fun main() {
 
             main {
                 button {
-                    bindState(State.startingGameProp) { _, new ->
+                    bindState(State.startingGameProp) { old, new ->
+                        console.log("setting disabled", old, new)
                         disabled = new
                     }
 

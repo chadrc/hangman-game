@@ -1,5 +1,14 @@
 import org.w3c.dom.Element
 
 var Element.disabled: Boolean
-    get() = getAttribute("disabled")?.toBoolean() ?: false
-    set(v) = setAttribute("disabled", v.toString())
+    get() {
+        val attr = getAttribute("disabled")
+        return attr != null
+    }
+    set(v) {
+        if (v) {
+            setAttribute("disabled", "true")
+        } else {
+            removeAttribute("disabled")
+        }
+    }
