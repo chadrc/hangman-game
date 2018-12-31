@@ -32,3 +32,7 @@ fun <T> makeGetRequest(path: String, callback: (T) -> Unit) {
 fun makeStartGameRequest(callback: (GameResponse) -> Unit) {
     makePostRequest("/start", callback)
 }
+
+fun makeGetGameRequest(id: Int, callback: (GameResponse) -> Unit) {
+    makeGetRequest("/game/$id", callback)
+}

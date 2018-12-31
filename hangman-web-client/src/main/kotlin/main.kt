@@ -8,6 +8,7 @@ import kotlin.browser.document
 import kotlin.browser.window
 
 fun main() {
+    getGame()
     window.addEventListener("load", {
         val body = document.body!!
 
@@ -20,7 +21,7 @@ fun main() {
 
             main {
                 button {
-                    bindState(State.startingGameProp) { _, new ->
+                    bindState(State.gettingGame) { _, new ->
                         disabled = new
                     }
 
