@@ -29,4 +29,9 @@ class ObservableProp<T>(initialValue: T) {
 
 object State {
     val startingGameProp = ObservableProp(false)
+    val gameId = ObservableProp(-1)
+    val guesses= ObservableProp(listOf<String>())
+    val word = ObservableProp("")
+    val gameWon = ObservableProp<Boolean?>(null)
+    val gameForfeit = ObservableProp<Boolean?>(null)
 }

@@ -24,11 +24,7 @@ fun main() {
                         disabled = new
                     }
 
-                    onClickFunction = {
-                        startGameRequest { response ->
-                            console.log(response)
-                        }
-                    }
+                    onClickFunction = { startGame() }
 
                     +"Start Game"
                 }
