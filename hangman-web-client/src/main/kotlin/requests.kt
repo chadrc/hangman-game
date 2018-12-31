@@ -10,7 +10,6 @@ fun <T> makeRequest(path: String, method: String, callback: (T) -> Unit) {
     ))
 
     window.fetch(request).then {
-        console.log("fetch response", it)
         when {
             it.ok -> it.json().then { data -> {
                 console.log("json response", data)
