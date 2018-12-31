@@ -9,7 +9,6 @@ import kotlin.browser.window
 
 fun main() {
     window.addEventListener("load", {
-
         val body = document.body!!
 
         body.append {
@@ -18,23 +17,24 @@ fun main() {
                     +"Hangman"
                 }
             }
+
             main {
                 button {
-                    onClickFunction = { event ->
-                        console.log("click", event)
+                    bind(State.startingGameProp) {_, new ->
+                        this.setAttribute("disabled", new.toString())
+                    }
 
-                        console.log("coroutine started")
-
-                        val response = startGameRequest { response ->
+                    onClickFunction = {
+                        startGameRequest { response ->
                             console.log(response)
                         }
-
-                        console.log("response", response)
                     }
 
                     +"Start Game"
                 }
             }
         }
+
+        Binder.bindElements()
     })
 }

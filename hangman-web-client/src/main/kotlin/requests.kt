@@ -10,11 +10,20 @@ fun <T> makeRequest(path: String, method: String, callback: (T) -> Unit) {
     ))
 
     window.fetch(request).then {
+        console.log("fetch response", it)
         when {
-            it.ok -> it.json().then { data -> callback(data as T) }
+            it.ok -> it.json().then { data -> {
+                console.log("json response", data)
+                callback(data as T)
+            } }
             else -> it.text().then { message -> console.error("Failed request $message") }
         }
     }
 }
 
-fun startGameRequest(callback: (GameResponse) -> Unit) = makeRequest("/start", "POST", callback)
+fun startGameRequest(callback: (GameResponse) -> Unit) {
+    console.log("start game request")
+    State.startingGameProp.value = true
+    makeRequest("/start", "POST", callback)
+//    State.startingGameProp.value = false
+}
