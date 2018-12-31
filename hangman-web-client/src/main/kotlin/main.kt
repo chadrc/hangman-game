@@ -1,11 +1,15 @@
+import kotlinx.html.button
+import kotlinx.html.dom.append
+import kotlinx.html.h1
+import kotlinx.html.header
+import kotlinx.html.js.onClickFunction
+import kotlinx.html.main
 import kotlin.browser.document
 import kotlin.browser.window
-import kotlinx.html.*
-import kotlinx.html.dom.*
-import kotlinx.html.js.onClickFunction
 
 fun main() {
     window.addEventListener("load", {
+
         val body = document.body!!
 
         body.append {
@@ -16,11 +20,19 @@ fun main() {
             }
             main {
                 button {
-                    onClickFunction = {
-                        console.log("Starting Game")
+                    onClickFunction = { event ->
+                        console.log("click", event)
+
+                        console.log("coroutine started")
+
+                        val response = startGameRequest { response ->
+                            console.log(response)
+                        }
+
+                        console.log("response", response)
                     }
 
-                    + "Start Game"
+                    +"Start Game"
                 }
             }
         }

@@ -31,6 +31,7 @@ fun HTML.indexPage() {
         }
 
         scriptAsset("kotlin")
+        scriptAsset("kotlinx-coroutines-core")
         scriptAsset("kotlinx-html-js")
         scriptAsset("hangman-common")
         scriptAsset("main")
