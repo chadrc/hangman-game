@@ -64,6 +64,6 @@ task deleteClientJs(type: Delete) {
     setDelete "resources/static/js"
 }
 
-build.dependsOn(copyClientJs)
+processResources.dependsOn(copyClientJs)
 
 clean.dependsOn(deleteClientJs)
