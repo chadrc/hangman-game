@@ -21,7 +21,6 @@ fun <T> makeRequest(path: String, method: String, callback: (T) -> Unit) {
 }
 
 fun startGameRequest(callback: (GameResponse) -> Unit) {
-    console.log("start game request")
     State.startingGameProp.value = true
     makeRequest("/start", "POST", callback)
     State.startingGameProp.value = false
