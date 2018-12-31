@@ -4,21 +4,43 @@ import com.chadrc.hangman.errors.GameNotFoundError
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.http.HttpStatusCode
-import io.ktor.request.receive
 import io.ktor.request.receiveOrNull
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import models.GameInfo
+import models.GameResult
+import models.Guess
 import requests.ForfeitRequest
 import requests.GuessRequest
 import responses.GameResponse
+import responses.GameResultResponse
 
 fun GameInfo.isComplete() = result?.won != null || result?.forfeit != null
 
 suspend inline fun <reified T : Any> ApplicationCall.tryReceive(): T? =
     try { receiveOrNull() } catch (exception: Exception) { null }
+
+fun resultToResponse(result: GameResult?): GameResultResponse? {
+    if (result == null) {
+        return null
+    }
+
+    return GameResultResponse(result.won, result.forfeit)
+}
+
+fun guessesToResponse(guesses: List<Guess>): List<String> = guesses.map { it.guess }
+
+fun gameToResponse(gameInfo: GameInfo): GameResponse {
+    val word = if (gameInfo.isComplete()) gameInfo.word else null
+    return GameResponse(
+        gameInfo.game.id,
+        word,
+        guessesToResponse(gameInfo.guesses),
+        resultToResponse(gameInfo.result)
+    )
+}
 
 fun Routing.hangmanRestRoutes(hangmanService: HangmanService) {
     post("/start") {
@@ -26,8 +48,7 @@ fun Routing.hangmanRestRoutes(hangmanService: HangmanService) {
 
         if (startGameResult is Ok) {
             val gameInfo = startGameResult.result()
-            val word = if (gameInfo.isComplete()) gameInfo.word else null
-            call.respond(GameResponse(gameInfo.game, word, gameInfo.guesses, gameInfo.result))
+            call.respond(gameToResponse(gameInfo))
         } else if (startGameResult is Error) {
             call.respond(HttpStatusCode.InternalServerError, startGameResult.message)
         }
@@ -47,8 +68,7 @@ fun Routing.hangmanRestRoutes(hangmanService: HangmanService) {
         when (getGameResult) {
             is Ok -> {
                 val gameInfo = getGameResult.result()
-                val word = if (gameInfo.isComplete()) gameInfo.word else null
-                call.respond(GameResponse(gameInfo.game, word, gameInfo.guesses, gameInfo.result))
+                call.respond(gameToResponse(gameInfo))
             }
             is GameNotFoundError -> call.respond(HttpStatusCode.NotFound)
             else -> call.respond(HttpStatusCode.InternalServerError, (getGameResult as Error).message)
@@ -76,9 +96,8 @@ fun Routing.hangmanRestRoutes(hangmanService: HangmanService) {
 
         when (makeGuessResult) {
             is Ok -> {
-                val newGameInfo = makeGuessResult.result()
-                val word = if (newGameInfo.isComplete()) newGameInfo.word else null
-                call.respond(GameResponse(newGameInfo.game, word, newGameInfo.guesses, newGameInfo.result))
+                val gameInfo = makeGuessResult.result()
+                call.respond(gameToResponse(gameInfo))
             }
             is GameNotFoundError -> call.respond(HttpStatusCode.NotFound)
             else -> call.respond(HttpStatusCode.InternalServerError, (makeGuessResult as Error).message)
@@ -98,7 +117,7 @@ fun Routing.hangmanRestRoutes(hangmanService: HangmanService) {
         when (forfeitResult) {
             is Ok -> {
                 val gameInfo = forfeitResult.result()
-                call.respond(GameResponse(gameInfo.game, gameInfo.word, gameInfo.guesses, gameInfo.result))
+                call.respond(gameToResponse(gameInfo))
             }
             is GameNotFoundError -> call.respond(HttpStatusCode.NotFound)
             else -> call.respond(HttpStatusCode.InternalServerError, (forfeitResult as Error).message)

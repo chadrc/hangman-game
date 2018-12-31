@@ -50,7 +50,7 @@ class RestRouteTest {
                 val content = response.content ?: fail("No content in response")
                 val data: GameResponse = mapper.readValue(content)
 
-                assertNotNull(data.game)
+                assertNotNull(data.gameId)
                 assertNotNull(data.guesses)
                 assertNull(data.result)
                 assertNull(data.word)
@@ -69,7 +69,7 @@ class RestRouteTest {
                 val content = response.content ?: fail("No content in response")
                 val data: GameResponse = mapper.readValue(content)
 
-                assertNotNull(data.game)
+                assertNotNull(data.gameId)
                 assertNotNull(data.guesses)
                 assertNull(data.result)
                 assertNull(data.word)
@@ -110,7 +110,7 @@ class RestRouteTest {
                 val content = response.content ?: fail("No content in response")
                 val data: GameResponse = mapper.readValue(content)
 
-                assertNotNull(data.game)
+                assertNotNull(data.gameId)
                 assertNotNull(data.guesses)
                 assertEquals(1, data.guesses.size)
                 assertNull(data.result)
@@ -200,7 +200,7 @@ class RestRouteTest {
             val content = response.content ?: fail("No content in response")
             val data: GameResponse = mapper.readValue(content)
 
-            assertNotNull(data.game)
+            assertNotNull(data.gameId)
             assertNotNull(data.guesses)
             assertNotNull(data.result)
             assertNotNull(data.word)
