@@ -9,6 +9,7 @@ import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
 import models.GameInfo
+import requests.ForfeitRequest
 import requests.GuessRequest
 import responses.GameResponse
 
@@ -82,6 +83,17 @@ fun Routing.hangmanRestRoutes() {
     }
 
     post("/forfeit") {
-        call.respond(mapOf("message" to "Forfeiting Game"))
+        val data = call.receive<ForfeitRequest>()
+
+        val forfeitResult = hangmanService.forfeitGame(data.gameId)
+
+        when (forfeitResult) {
+            is Ok -> {
+                val gameInfo = forfeitResult.result()
+                call.respond(GameResponse(gameInfo.game, gameInfo.word, gameInfo.guesses, gameInfo.result))
+            }
+            is GameNotFoundError -> call.respond(HttpStatusCode.NotFound)
+            else -> call.respond(HttpStatusCode.InternalServerError, (forfeitResult as Error).message)
+        }
     }
 }

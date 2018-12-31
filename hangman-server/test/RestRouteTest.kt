@@ -11,6 +11,7 @@ import io.ktor.util.KtorExperimentalAPI
 import responses.GameResponse
 import org.junit.After
 import org.junit.Before
+import requests.ForfeitRequest
 import requests.GuessRequest
 import kotlin.test.*
 
@@ -161,6 +162,27 @@ class RestRouteTest {
             }.apply {
                 assertEquals(HttpStatusCode.BadRequest, response.status())
             }
+        }
+    }
+
+    @Test
+    fun `Make forfeit request on started game`() {
+        val game = (hangmanService.startGame() as Ok).result().game
+
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/forfeit") {
+                setBody(mapper.writeValueAsString(ForfeitRequest(game.id)))
+            }
+        }.apply {
+            assertEquals(HttpStatusCode.OK, response.status())
+
+            val content = response.content ?: fail("No content in response")
+            val data: GameResponse = mapper.readValue(content)
+
+            assertNotNull(data.game)
+            assertNotNull(data.guesses)
+            assertNotNull(data.result)
+            assertNotNull(data.word)
         }
     }
 }
