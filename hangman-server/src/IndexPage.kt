@@ -24,7 +24,6 @@ fun HTML.indexPage() {
         }
 
         cssLink("https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.css")
-        cssLink("/styles.css")
 
         script {
             defer = true
@@ -32,16 +31,11 @@ fun HTML.indexPage() {
         }
 
         scriptAsset("kotlin")
+        scriptAsset("kotlinx-html-js")
         scriptAsset("hangman-common")
         scriptAsset("main")
     }
 
     body {
-        h1 { +"HTML" }
-        ul {
-            for (n in 1..10) {
-                li { +"$n" }
-            }
-        }
     }
 }
