@@ -21,7 +21,7 @@ fun main() {
             main {
                 button {
                     bindState(State.startingGameProp) { _, new ->
-                        this.setAttribute("disabled", new.toString())
+                        disabled = new
                     }
 
                     onClickFunction = {
