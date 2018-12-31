@@ -25,6 +25,10 @@ fun main() {
                         disabled = new
                     }
 
+                    bindState(State.gameId) { _, new ->
+                        hidden = new != -1
+                    }
+
                     onClickFunction = { startGame() }
 
                     +"Start Game"
