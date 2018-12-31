@@ -24,6 +24,7 @@ class HangmanServiceTest {
     fun cleanUp() {
         utils.emptyAll()
         hangmanDatabase.close()
+        hangmanService.close()
         utils.close()
     }
 

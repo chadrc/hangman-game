@@ -10,6 +10,10 @@ import models.Guess
 class HangmanService {
     private val database = HangmanDatabase()
 
+    fun close() {
+        database.close()
+    }
+
     fun startGame(): Result<GameInfo> {
         val word = database.getRandomWord() ?: return NoWordsAvailableError()
         val game = database.createGame(word.id, 10)
