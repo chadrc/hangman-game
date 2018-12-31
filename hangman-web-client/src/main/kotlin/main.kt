@@ -20,7 +20,7 @@ fun main() {
 
             main {
                 button {
-                    bind(State.startingGameProp) {_, new ->
+                    bindState(State.startingGameProp) { _, new ->
                         this.setAttribute("disabled", new.toString())
                     }
 

@@ -29,7 +29,7 @@ object Binder {
         for (binding in registry) {
             val element = document.getElementById(binding.id)
             if (element == null) {
-                console.error("No element with id ${binding.id} found to bind")
+                console.error("No element with id ${binding.id} found to bindState")
                 continue
             }
 
@@ -40,7 +40,7 @@ object Binder {
     }
 }
 
-fun <T> CommonAttributeGroupFacade.bind(
+fun <T> CommonAttributeGroupFacade.bindState(
     prop: ObservableProp<T>,
     func: BindingFunc<T>
 ) {
