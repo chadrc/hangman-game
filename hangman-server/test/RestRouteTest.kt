@@ -37,7 +37,7 @@ class RestRouteTest {
         utils.close()
     }
 
-    fun <R> withHangmanTestApplication(test: TestApplicationEngine.() -> R): R {
+    private fun <R> withHangmanTestApplication(test: TestApplicationEngine.() -> R): R {
         return withTestApplication({ module(true, hangmanService) }, test)
     }
 
