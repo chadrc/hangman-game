@@ -133,4 +133,34 @@ class RestRouteTest {
             }
         }
     }
+
+    @Test
+    fun `Make guess with missing gameId returns bad request`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString(
+                    mapOf(
+                        "guess" to "c"
+                    )
+                ))
+            }.apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
+
+    @Test
+    fun `Make guess with missing guess returns bad request`() {
+        withTestApplication({ module(testing = true) }) {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString(
+                    mapOf(
+                        "gameId" to 1
+                    )
+                ))
+            }.apply {
+                assertEquals(HttpStatusCode.BadRequest, response.status())
+            }
+        }
+    }
 }

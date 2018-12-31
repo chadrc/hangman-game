@@ -54,6 +54,11 @@ fun Routing.hangmanRestRoutes() {
     post("/guess") {
         val data = call.receive<GuessRequest>()
 
+        if (data.gameId == -1) {
+            call.respond(HttpStatusCode.BadRequest)
+            return@post
+        }
+
         val makeGuessResult = when {
             data.guess.length == 1 -> hangmanService.makeGuess(data.gameId, data.guess[0])
             data.guess.isNotEmpty() -> hangmanService.makeWordGuess(data.gameId, data.guess)

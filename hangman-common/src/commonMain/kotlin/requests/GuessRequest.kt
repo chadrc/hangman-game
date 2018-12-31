@@ -1,3 +1,3 @@
 package requests
 
-data class GuessRequest(val gameId: Int, val guess: String)
+data class GuessRequest(val gameId: Int = -1, val guess: String = "")
