@@ -53,14 +53,15 @@ class RestRouteTest {
                 assertNotNull(data.gameId)
                 assertNotNull(data.guesses)
                 assertNull(data.result)
-                assertNull(data.word)
+                assertNotNull(data.word)
             }
         }
     }
 
     @Test
     fun `Get started game`() {
-        val game = (hangmanService.startGame() as Ok).result().game
+        val gameInfo = (hangmanService.startGame() as Ok).result()
+        val game = gameInfo.game
 
         withHangmanTestApplication {
             handleRequest(HttpMethod.Get, "/game/${game.id}").apply {
@@ -72,7 +73,8 @@ class RestRouteTest {
                 assertNotNull(data.gameId)
                 assertNotNull(data.guesses)
                 assertNull(data.result)
-                assertNull(data.word)
+                assertNotNull(data.word)
+                assertEquals(gameInfo.word.length, data.word.length)
             }
         }
     }
@@ -114,7 +116,40 @@ class RestRouteTest {
                 assertNotNull(data.guesses)
                 assertEquals(1, data.guesses.size)
                 assertNull(data.result)
-                assertNull(data.word)
+                assertNotNull(data.word)
+            }
+        }
+    }
+
+    @Test
+    fun `Make guess that is in the word returns that letter in word`() {
+        val gameInfo = (hangmanService.startGame() as Ok).result()
+        val game = gameInfo.game
+
+        val word = gameInfo.word
+
+        val firstChar = word.substring(0, 1)
+
+        val spaces = " ".repeat(word.length)
+        val resultStr = firstChar + spaces.substring(1)
+
+        withHangmanTestApplication {
+            handleRequest(HttpMethod.Post, "/guess") {
+                setBody(mapper.writeValueAsString(
+                    GuessRequest(game.id, firstChar)
+                ))
+            }.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+
+                val content = response.content ?: fail("No content in response")
+                val data: GameResponse = mapper.readValue(content)
+
+                assertNotNull(data.gameId)
+                assertNotNull(data.guesses)
+                assertEquals(1, data.guesses.size)
+                assertNull(data.result)
+                assertEquals(word.length, data.word.length)
+                assertEquals(resultStr, data.word)
             }
         }
     }

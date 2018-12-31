@@ -32,11 +32,27 @@ fun resultToResponse(result: GameResult?): GameResultResponse? {
 
 fun guessesToResponse(guesses: List<Guess>): List<String> = guesses.map { it.guess }
 
+fun spaceUnfoundLetters(word: String, guesses: List<Guess>): String {
+    val characterGuesses = guesses.filter { it.guess.length == 1 }.map { it.guess[0] }
+    val spacedWordBuilder = StringBuilder()
+
+    for (c in word.toCharArray()) {
+        val newC = if (characterGuesses.contains(c)) {
+            c
+        } else {
+            ' '
+        }
+
+        spacedWordBuilder.append(newC)
+    }
+
+    return spacedWordBuilder.toString()
+}
+
 fun gameToResponse(gameInfo: GameInfo): GameResponse {
-    val word = if (gameInfo.isComplete()) gameInfo.word else null
     return GameResponse(
         gameInfo.game.id,
-        word,
+        spaceUnfoundLetters(gameInfo.word, gameInfo.guesses),
         guessesToResponse(gameInfo.guesses),
         resultToResponse(gameInfo.result)
     )
