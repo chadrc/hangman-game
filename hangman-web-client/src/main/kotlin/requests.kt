@@ -1,4 +1,5 @@
 import org.w3c.fetch.*
+import responses.GameResponse
 import kotlin.browser.window
 
 fun <T> makeRequest(path: String, method: String, callback: (T) -> Unit) {
@@ -18,4 +19,16 @@ fun <T> makeRequest(path: String, method: String, callback: (T) -> Unit) {
             else -> it.text().then { message -> console.error("Failed request $message") }
         }
     }
+}
+
+fun <T> makePostRequest(path: String, callback: (T) -> Unit) {
+    makeRequest(path, "POST", callback)
+}
+
+fun <T> makeGetRequest(path: String, callback: (T) -> Unit) {
+    makeRequest(path, "GET", callback)
+}
+
+fun makeStartGameRequest(callback: (GameResponse) -> Unit) {
+    makePostRequest("/start", callback)
 }

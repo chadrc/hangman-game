@@ -1,8 +1,6 @@
-import responses.GameResponse
-
 fun startGame() {
     State.startingGameProp.value = true
-    makeRequest<GameResponse>("/start", "POST") {
+    makeStartGameRequest {
         State.startingGameProp.value = false
 
         State.gameId.value = it.gameId
