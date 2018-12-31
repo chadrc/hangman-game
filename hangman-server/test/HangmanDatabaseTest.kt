@@ -3,8 +3,10 @@ package com.chadrc.hangman
 import models.Game
 import org.junit.After
 import org.junit.Before
+import org.junit.jupiter.api.TestInstance
 import kotlin.test.*
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HangmanDatabaseTest {
     private val database = HangmanDatabase()
     private val utils = TestUtils()
@@ -75,7 +77,8 @@ class HangmanDatabaseTest {
         assertEquals(10, game.guessesAllowed)
 
         // check database for created game
-        val statement = utils.connection.prepareStatement("""
+        val newConn = utils.newConnection
+        val statement = newConn.prepareStatement("""
             SELECT * FROM games WHERE id=?
         """.trimIndent())
 
@@ -89,6 +92,7 @@ class HangmanDatabaseTest {
         assertEquals(10, resultSet.getInt("guesses_allowed"))
 
         resultSet.close()
+        newConn.close()
     }
 
     @Test
@@ -182,7 +186,8 @@ class HangmanDatabaseTest {
         assertNull(gameResult.forfeit)
         assertEquals(true, gameResult.won)
 
-        val resultSet = utils.connection.prepareStatement("""
+        val newConn = utils.newConnection
+        val resultSet = newConn.prepareStatement("""
             SELECT * FROM game_results WHERE id=${gameResult.id}
         """.trimIndent()).executeQuery()
 
@@ -194,6 +199,7 @@ class HangmanDatabaseTest {
         assertNull(resultSet.getObject("forfeit"))
 
         resultSet.close()
+        newConn.close()
     }
 
     @Test
@@ -207,7 +213,8 @@ class HangmanDatabaseTest {
         assertEquals(true, gameResult.forfeit)
         assertNull(gameResult.won)
 
-        val resultSet = utils.connection.prepareStatement("""
+        val newConn = utils.newConnection
+        val resultSet = newConn.prepareStatement("""
             SELECT * FROM game_results WHERE id=${gameResult.id}
         """.trimIndent()).executeQuery()
 
@@ -219,6 +226,7 @@ class HangmanDatabaseTest {
         assertEquals(true, resultSet.getBoolean("forfeit"))
 
         resultSet.close()
+        newConn.close()
     }
 
     @Test

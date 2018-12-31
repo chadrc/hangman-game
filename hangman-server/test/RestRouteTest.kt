@@ -11,10 +11,12 @@ import io.ktor.util.KtorExperimentalAPI
 import responses.GameResponse
 import org.junit.After
 import org.junit.Before
+import org.junit.jupiter.api.TestInstance
 import requests.ForfeitRequest
 import requests.GuessRequest
 import kotlin.test.*
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @KtorExperimentalAPI
 class RestRouteTest {
     private val utils = TestUtils()

@@ -6,8 +6,10 @@ import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
 import org.junit.After
 import org.junit.Before
+import org.junit.jupiter.api.TestInstance
 import kotlin.test.*
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HangmanServiceTest {
     private val hangmanService = HangmanService()
     private val hangmanDatabase = HangmanDatabase()

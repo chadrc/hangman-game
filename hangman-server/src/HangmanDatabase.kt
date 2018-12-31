@@ -22,9 +22,12 @@ class HangmanDatabase {
         datasource = HikariDataSource(config)
     }
 
-    private val connection: Connection = datasource.connection
-
-    private fun <T> withConnection(func: (conn: Connection) -> T): T = func(connection)
+    private fun <T> withConnection(func: (conn: Connection) -> T): T {
+        val conn = datasource.connection
+        val result = func(conn)
+        conn.close()
+        return result
+    }
 
     fun close() {
         datasource.close()
@@ -86,7 +89,7 @@ class HangmanDatabase {
     }
 
     fun getGame(gameId: Int): Game? = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             SELECT * FROM games WHERE id=?
         """.trimIndent())
 
@@ -109,7 +112,7 @@ class HangmanDatabase {
     }
 
     fun getWord(word: String): Word? = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             SELECT * FROM words WHERE word=?
         """.trimIndent())
 
@@ -119,7 +122,7 @@ class HangmanDatabase {
     }
 
     fun createGuess(gameId: Int, guess: Char): Guess = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             INSERT INTO character_guesses (game_id, guess)
             VALUES (?, ?)
         """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
@@ -165,7 +168,7 @@ class HangmanDatabase {
     }
 
     fun getRandomWord(): Word? = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             SELECT * FROM words OFFSET floor(random()*(SELECT COUNT(*) FROM words)) LIMIT 1
         """.trimIndent())
 
@@ -173,7 +176,7 @@ class HangmanDatabase {
     }
 
     fun getGuessesWithGameId(gameId: Int): List<Guess> = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             SELECT * FROM character_guesses WHERE game_id=?
         """.trimIndent())
 
@@ -221,7 +224,7 @@ class HangmanDatabase {
     }
 
     fun createWonGameResult(gameId: Int, won: Boolean): GameResult = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             INSERT INTO game_results (game_id, won)
             VALUES (?, ?)
         """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
@@ -244,7 +247,7 @@ class HangmanDatabase {
     }
 
     fun createForfeitGameResult(gameId: Int, forfeit: Boolean): GameResult = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             INSERT INTO game_results (game_id, forfeit)
             VALUES (?, ?)
         """.trimIndent(), Statement.RETURN_GENERATED_KEYS)
@@ -267,7 +270,7 @@ class HangmanDatabase {
     }
 
     fun getGameResultWithGameId(gameId: Int): GameResult? = withConnection {
-        val statement = connection.prepareStatement("""
+        val statement = it.prepareStatement("""
             SELECT * FROM game_results WHERE game_id=?
         """.trimIndent())
 
@@ -284,6 +287,9 @@ class HangmanDatabase {
         val won = if (wonObj is Boolean) wonObj else null
         val forfeitObj = resultSet.getObject("forfeit")
         val forfeit = if (forfeitObj is Boolean) forfeitObj else null
+
+        resultSet.close()
+        statement.close()
 
         GameResult(id, gameId, won, forfeit)
     }

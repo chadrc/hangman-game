@@ -19,14 +19,17 @@ class TestUtils {
         datasource = HikariDataSource(config)
     }
 
-    val connection: Connection = datasource.connection
+    val newConnection: Connection
+        get() {
+            return datasource.connection
+        }
 
     fun close() {
         datasource.close()
     }
 
     fun addTestWords() {
-        val conn = connection
+        val conn = datasource.connection
 
         val statement = conn.createStatement()
         statement.executeUpdate(
@@ -39,6 +42,7 @@ class TestUtils {
         )
 
         statement.close()
+        conn.close()
     }
 
     fun basicDataSetup() {
@@ -65,10 +69,12 @@ class TestUtils {
     fun emptyWords() = emptyTable("words")
 
     private fun emptyTable(table: String) {
-        val statement: Statement = connection.createStatement()
+        val conn = datasource.connection
+        val statement: Statement = conn.createStatement()
         @Suppress("SqlWithoutWhere")
         statement.executeUpdate("DELETE FROM $table")
 
         statement.close()
+        conn.close()
     }
 }
