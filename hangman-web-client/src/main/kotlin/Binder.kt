@@ -10,7 +10,7 @@ object IdGenerator {
         get() = currentId++.toString()
 }
 
-typealias BindingFunc<T> = Element.(T, T)-> Unit
+typealias BindingFunc<T> = Element.(T, T) -> Unit
 
 class Binding<T>(
     val id: String,

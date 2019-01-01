@@ -24,6 +24,7 @@ fun HTML.indexPage() {
         }
 
         cssLink("https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.css")
+        cssLink("/styles.css")
 
         script {
             defer = true

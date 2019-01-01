@@ -44,6 +44,12 @@ fun Application.module(
             }
         }
 
+        get("/styles.css") {
+            call.respondCss {
+                mainStyles()
+            }
+        }
+
         static("/assets") {
             resources("static")
         }
