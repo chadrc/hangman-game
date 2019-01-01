@@ -56,6 +56,9 @@ fun CSSBuilder.mainStyles() {
         borderTop(2.px, BorderStyle.solid, Color.black)
         paddingTop = 20.px
         marginBottom = 20.px
+        display = Display.flex
+        justifyContent = JustifyContent.center
+        alignItems = Align.center
     }
 
     rule(".hangman-guesses") {
