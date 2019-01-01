@@ -29,10 +29,10 @@ fun main() {
                     +"Start Game"
                 }
 
-                section {
+                section("hangman-game") {
                     showIfValidGameId()
 
-                    p {
+                    section("hangman-word") {
                         renderWithWord { word ->
                             for (c in word) {
                                 span("hangman-character") {
@@ -41,6 +41,38 @@ fun main() {
                                     } else  {
                                         + c.toString()
                                     }
+                                }
+                            }
+                        }
+                    }
+
+                    section("hangman-guess-form") {
+                        input {
+
+                        }
+
+                        button {
+                            +"Guess"
+                        }
+                    }
+
+                    section("hangman-guesses") {
+                        header("guesses-header") {
+                            h2 {
+                                +"Guesses"
+                            }
+                        }
+
+                        section("guesses-lists") {
+                            ul("hangman-character-guesses") {
+                                li {
+                                    +"Letters"
+                                }
+                            }
+
+                            ul("hangman-word-guesses") {
+                                li {
+                                    +"Words"
                                 }
                             }
                         }

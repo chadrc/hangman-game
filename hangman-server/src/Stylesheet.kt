@@ -2,6 +2,7 @@ package com.chadrc.hangman
 
 import kotlinx.css.*
 import kotlinx.css.properties.borderBottom
+import kotlinx.css.properties.borderTop
 
 val main get() = TagSelector("main")
 
@@ -29,15 +30,18 @@ fun CSSBuilder.mainStyles() {
 
     }
 
-    section {
+    rule(".hangman-game") {
         display = Display.flex
+        flexDirection = FlexDirection.column
         justifyContent = JustifyContent.center
     }
 
-    rule("section p") {
+    rule(".hangman-word") {
         display = Display.flex
+        flexDirection = FlexDirection.row
         justifyContent = JustifyContent.center
         alignItems = Align.center
+        marginBottom = 20.px
     }
 
     rule(".hangman-character") {
@@ -46,5 +50,35 @@ fun CSSBuilder.mainStyles() {
         width = 1.em
         margin(0.em, .25.em)
         borderBottom(2.px, BorderStyle.solid, Color.black)
+    }
+
+    rule(".hangman-guess-form") {
+        borderTop(2.px, BorderStyle.solid, Color.black)
+        paddingTop = 20.px
+        marginBottom = 20.px
+    }
+
+    rule(".hangman-guesses") {
+        borderTop(2.px, BorderStyle.solid, Color.black)
+        paddingTop = 20.px
+        display = Display.flex
+        flexDirection = FlexDirection.column
+    }
+
+    rule(".guesses-lists") {
+        display = Display.flex
+        flexDirection = FlexDirection.row
+    }
+
+    rule(".guesses-lists > ul") {
+        width = 50.pct
+    }
+
+    rule(".guesses-lists > ul > li") {
+
+    }
+
+    rule(".guesses-lists > ul > li:first-child") {
+        textAlign = TextAlign.center
     }
 }
