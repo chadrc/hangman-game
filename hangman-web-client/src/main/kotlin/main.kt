@@ -1,12 +1,8 @@
-import kotlinx.html.button
+import kotlinx.html.*
+import kotlinx.html.Entities.*
 import kotlinx.html.dom.append
-import kotlinx.html.h1
-import kotlinx.html.header
-import kotlinx.html.js.div
 import kotlinx.html.js.onClickFunction
-import kotlinx.html.js.p
 import kotlinx.html.js.span
-import kotlinx.html.main
 import kotlin.browser.document
 import kotlin.browser.window
 
@@ -16,13 +12,14 @@ fun main() {
         val body = document.body!!
 
         body.append {
-            header {
-                h1 {
-                    +"Hangman"
-                }
-            }
 
             main {
+                header {
+                    h1 {
+                        +"Hangman"
+                    }
+                }
+
                 button {
                     disableIfGettingGame()
                     hideIfInvalidGameId()
@@ -32,14 +29,18 @@ fun main() {
                     +"Start Game"
                 }
 
-                div {
+                section {
                     showIfValidGameId()
 
                     p {
-                        updateWithWord { word ->
+                        renderWithWord { word ->
                             for (c in word) {
                                 span("hangman-character") {
-                                    + c.toString()
+                                    if (c == ' ') {
+                                        + nbsp
+                                    } else  {
+                                        + c.toString()
+                                    }
                                 }
                             }
                         }

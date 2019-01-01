@@ -22,10 +22,9 @@ fun CommonAttributeGroupFacade.showIfValidGameId() {
     }
 }
 
-fun CommonAttributeGroupFacade.updateWithWord(render: TagConsumer<HTMLElement>.(word: String) -> Unit) {
-    bindState(State.word) { _, new ->
-        console.log("word change '$new'")
+fun CommonAttributeGroupFacade.renderWithWord(render: TagConsumer<HTMLElement>.(word: String) -> Unit) {
 
+    bindState(State.word) { _, new ->
         while (firstChild != null) {
             removeChild(firstChild as Node)
         }
