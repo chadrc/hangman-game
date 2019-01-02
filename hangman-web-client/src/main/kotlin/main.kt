@@ -1,7 +1,8 @@
 import kotlinx.html.*
-import kotlinx.html.Entities.*
+import kotlinx.html.Entities.nbsp
 import kotlinx.html.dom.append
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onInputFunction
 import kotlinx.html.js.span
 import kotlin.browser.document
 import kotlin.browser.window
@@ -48,11 +49,20 @@ fun main() {
 
                     section("hangman-guess-form") {
                         input {
-
+                            placeholder = "Guess"
+                            onInputFunction = { event -> console.log(event) }
                         }
 
                         button {
                             +"Guess"
+
+                            onClickFunction = { console.log("Guess submit") }
+                        }
+
+                        button {
+                            +"Forfeit"
+
+                            onClickFunction = { console.log("Forfeit clicked") }
                         }
                     }
 

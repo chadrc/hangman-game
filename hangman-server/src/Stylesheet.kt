@@ -61,6 +61,21 @@ fun CSSBuilder.mainStyles() {
         alignItems = Align.center
     }
 
+    rule(".hangman-guess-form input") {
+        border = "none"
+        borderBottom(2.px, BorderStyle.solid, Color.black)
+        fontSize = 2.rem
+        width = 10.em
+        outline = Outline.none
+        marginRight = 10.px
+        textAlign = TextAlign.center
+    }
+
+    rule(".hangman-guess-form button") {
+        marginLeft = 10.px
+        outline = Outline.none
+    }
+
     rule(".hangman-guesses") {
         borderTop(2.px, BorderStyle.solid, Color.black)
         paddingTop = 20.px
