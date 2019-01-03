@@ -1,36 +1,36 @@
+import responses.GameResponse
 import kotlin.browser.localStorage
+import kotlin.js.Promise
 
 const val gameIdKey: String = "gameId"
 
 fun getGame() {
     val currentGameId = localStorage.getItem(gameIdKey)?.toIntOrNull()
     if (currentGameId != null) {
-        State.gettingGame.value = true
-
-        makeGetGameRequest(currentGameId) {
-            State.gettingGame.value = false
-
-            State.gameId.value = it.gameId
-            State.guesses.value = it.guesses
-            State.gameWon.value = it.result?.won
-            State.gameForfeit.value = it.result?.forfeit
-            State.word.value = it.word
-        }
+        loadingAction(State.gettingGame, makeGetGameRequest(currentGameId))
     }
 }
 
-fun startGame() {
-    State.gettingGame.value = true
+fun startGame() = loadingAction(State.gettingGame, makeStartGameRequest())
 
-    makeStartGameRequest {
-        State.gettingGame.value = false
+fun makeGuess(guess: String) = loadingAction(State.makingGuess, makeGuessRequest(State.gameId.value, guess))
 
-        localStorage.setItem(gameIdKey, it.gameId.toString())
+fun forfeitGame() = loadingAction(State.forfeiting, makeForfeitRequest(State.gameId.value))
 
-        State.gameId.value = it.gameId
-        State.guesses.value = it.guesses
-        State.gameWon.value = it.result?.won
-        State.gameForfeit.value = it.result?.forfeit
-        State.word.value = it.word
+private fun loadingAction(loadingSwitch: ObservableProp<Boolean>, requestPromise: Promise<GameResponse>) {
+    loadingSwitch.value = true
+    requestPromise.then {
+        loadingSwitch.value = false
+        updateStateWithGameResponse(it)
     }
+}
+
+private fun updateStateWithGameResponse(gameResponse: GameResponse) {
+    localStorage.setItem(gameIdKey, gameResponse.gameId.toString())
+
+    State.gameId.value = gameResponse.gameId
+    State.guesses.value = gameResponse.guesses
+    State.gameWon.value = gameResponse.result?.won
+    State.gameForfeit.value = gameResponse.result?.forfeit
+    State.word.value = gameResponse.word
 }
