@@ -23,7 +23,6 @@ fun CommonAttributeGroupFacade.showIfValidGameId() {
 }
 
 fun CommonAttributeGroupFacade.renderWithWord(render: TagConsumer<HTMLElement>.(word: String) -> Unit) {
-
     bindState(State.word) { _, new ->
         while (firstChild != null) {
             removeChild(firstChild as Node)
