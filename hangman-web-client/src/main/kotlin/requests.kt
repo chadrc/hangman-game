@@ -1,4 +1,4 @@
-import org.w3c.fetch.*
+import org.w3c.fetch.RequestInit
 import requests.ForfeitRequest
 import requests.GuessRequest
 import responses.GameResponse
@@ -6,17 +6,17 @@ import kotlin.browser.window
 import kotlin.js.Promise
 
 fun <T> makeRequest(path: String, method: String, body: Any? = null): Promise<T> {
-    val request = Request(
-        path, RequestInit(
-            method = method,
-            cache = RequestCache.NO_CACHE,
-            redirect = RequestRedirect.ERROR,
-            body = JSON.stringify(body)
-        )
-    )
+    @Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
+    val requestData = js("{}") as RequestInit
+
+    requestData.method = method
+
+    if (body != null) {
+        requestData.body = JSON.stringify(body)
+    }
 
     return Promise { resolve, reject ->
-        window.fetch(request).then {
+        window.fetch(path, requestData).then {
             when (it.status.toInt()) {
                 200 -> it.json()
                     .then { data -> resolve(data as T) }
