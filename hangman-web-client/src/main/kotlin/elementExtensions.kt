@@ -1,4 +1,8 @@
 import org.w3c.dom.Element
+import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.events.Event
+import org.w3c.dom.events.EventTarget
+import org.w3c.dom.events.InputEvent
 
 fun Element.getBooleanAttribute(name: String): Boolean {
     val attr = getAttribute(name)
@@ -20,3 +24,5 @@ var Element.disabled: Boolean
 var Element.hidden: Boolean
     get() = getBooleanAttribute("hidden")
     set(v) = setBooleanAttribute("hidden", v)
+
+fun EventTarget.asInputElement(): HTMLInputElement = this as HTMLInputElement

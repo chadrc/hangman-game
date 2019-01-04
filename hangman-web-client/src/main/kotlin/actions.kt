@@ -17,6 +17,10 @@ fun makeGuess(guess: String) = loadingAction(State.makingGuess, makeGuessRequest
 
 fun forfeitGame() = loadingAction(State.forfeiting, makeForfeitRequest(State.gameId.value))
 
+fun updateGuessText(text: String) {
+    State.guessText.value = text
+}
+
 private fun loadingAction(loadingSwitch: ObservableProp<Boolean>, requestPromise: Promise<GameResponse>) {
     loadingSwitch.value = true
     requestPromise.then {

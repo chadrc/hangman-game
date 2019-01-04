@@ -32,6 +32,8 @@ object State {
     val makingGuess = ObservableProp(false)
     val forfeiting = ObservableProp(false)
 
+    val guessText = ObservableProp("")
+
     val gameId = ObservableProp(-1)
     val guesses= ObservableProp(listOf<String>())
     val word = ObservableProp("")
