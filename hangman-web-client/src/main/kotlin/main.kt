@@ -56,13 +56,13 @@ fun main() {
                         button {
                             +"Guess"
 
-                            onClickFunction = { console.log("Guess submit") }
+                            onClickFunction = { makeGuess() }
                         }
 
                         button {
                             +"Forfeit"
 
-                            onClickFunction = { console.log("Forfeit clicked") }
+                            onClickFunction = { forfeitGame() }
                         }
                     }
 

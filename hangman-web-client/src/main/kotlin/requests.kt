@@ -1,3 +1,4 @@
+import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import requests.ForfeitRequest
 import requests.GuessRequest
@@ -10,6 +11,11 @@ fun <T> makeRequest(path: String, method: String, body: Any? = null): Promise<T>
     val requestData = js("{}") as RequestInit
 
     requestData.method = method
+    val headers = Headers()
+    headers.set("Content-Type", "application/json")
+    headers.set("Accept", "application/json")
+
+    requestData.headers = headers
 
     if (body != null) {
         requestData.body = JSON.stringify(body)
@@ -23,6 +29,9 @@ fun <T> makeRequest(path: String, method: String, body: Any? = null): Promise<T>
                     .catch { throwable -> reject(Error("JSON error", throwable)) }
                 else -> it.text().then { message -> reject(Error("Failed request $message")) }
             }
+        }.catch {
+            console.error(it)
+            reject(it)
         }
     }
 }

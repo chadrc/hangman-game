@@ -13,7 +13,8 @@ fun getGame() {
 
 fun startGame() = loadingAction(State.gettingGame, makeStartGameRequest())
 
-fun makeGuess(guess: String) = loadingAction(State.makingGuess, makeGuessRequest(State.gameId.value, guess))
+fun makeGuess() =
+    loadingAction(State.makingGuess, makeGuessRequest(State.gameId.value, State.guessText.value))
 
 fun forfeitGame() = loadingAction(State.forfeiting, makeForfeitRequest(State.gameId.value))
 
