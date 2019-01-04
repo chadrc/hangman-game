@@ -37,7 +37,7 @@ fun CommonAttributeGroupFacade.renderWithWord(render: TagConsumer<HTMLElement>.(
 }
 
 fun CommonAttributeGroupFacade.bindValue(prop: ObservableProp<String>) {
-    bindState(prop) {_, new ->
+    bindState(prop) { _, new ->
         val inputElement = this as HTMLInputElement
 
         inputElement.value = new
