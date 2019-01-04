@@ -48,6 +48,7 @@ fun CSSBuilder.mainStyles() {
         display = Display.block
         fontSize = 2.rem
         width = 1.em
+        textAlign = TextAlign.center
         margin(0.em, .25.em)
         borderBottom(2.px, BorderStyle.solid, Color.black)
     }
