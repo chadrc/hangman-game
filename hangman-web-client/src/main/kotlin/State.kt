@@ -35,8 +35,14 @@ object State {
     val guessText = ObservableProp("")
 
     val gameId = ObservableProp(-1)
-    val guesses= ObservableProp(listOf<String>())
+    val guesses = ObservableProp<Array<String>>(arrayOf())
     val word = ObservableProp("")
     val gameWon = ObservableProp<Boolean?>(null)
     val gameForfeit = ObservableProp<Boolean?>(null)
+
+    val wordGuesses: List<String>
+        get() = guesses.value.filter { it.length > 1 }
+
+    val characterGuesses: List<String>
+        get() = guesses.value.filter { it.length == 1 }
 }

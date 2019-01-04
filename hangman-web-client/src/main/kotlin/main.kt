@@ -78,12 +78,22 @@ fun main() {
                                 li {
                                     +"Letters"
                                 }
+
+                                renderWithCharacterGuesses { guesses ->
+                                    guesses.map { guess ->
+                                        li {
+                                            + guess
+                                        }
+                                    }
+                                }
                             }
 
                             ul("hangman-word-guesses") {
                                 li {
                                     +"Words"
                                 }
+
+//                                renderWithWordGuesses()
                             }
                         }
                     }
