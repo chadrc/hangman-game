@@ -34,13 +34,30 @@ fun CommonAttributeGroupFacade.renderWithWord(render: TagConsumer<HTMLElement>.(
     }
 }
 
-fun CommonAttributeGroupFacade.renderWithCharacterGuesses(render: TagConsumer<HTMLElement>.(word: List<String>) -> Unit) {
+fun CommonAttributeGroupFacade.renderWithCharacterGuesses(
+    render: TagConsumer<HTMLElement>.(
+        word: List<String>
+    ) -> Unit
+) =
+    renderWithGuesses({ State.characterGuesses }, render)
+
+fun CommonAttributeGroupFacade.renderWithWordGuesses(
+    render: TagConsumer<HTMLElement>.(
+        word: List<String>
+    ) -> Unit
+) =
+    renderWithGuesses({ State.wordGuesses }, render)
+
+private fun CommonAttributeGroupFacade.renderWithGuesses(
+    getList: () -> List<String>,
+    render: TagConsumer<HTMLElement>.(word: List<String>) -> Unit
+) {
     bindState(State.guesses) { _, _ ->
         while (childNodes.length > 1) {
             removeChild(lastChild as Node)
         }
 
-        this.append { render.invoke(this, State.characterGuesses) }
+        this.append { render.invoke(this, getList()) }
     }
 }
 

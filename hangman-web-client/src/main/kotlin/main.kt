@@ -3,8 +3,17 @@ import kotlinx.html.Entities.nbsp
 import kotlinx.html.dom.append
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.span
+import org.w3c.dom.HTMLElement
 import kotlin.browser.document
 import kotlin.browser.window
+
+val renderStringList: TagConsumer<HTMLElement>.(List<String>) -> Unit = { list ->
+    list.map {
+        li {
+            + it
+        }
+    }
+}
 
 fun main() {
     getGame()
@@ -79,13 +88,7 @@ fun main() {
                                     +"Letters"
                                 }
 
-                                renderWithCharacterGuesses { guesses ->
-                                    guesses.map { guess ->
-                                        li {
-                                            + guess
-                                        }
-                                    }
-                                }
+                                renderWithCharacterGuesses(renderStringList)
                             }
 
                             ul("hangman-word-guesses") {
@@ -93,7 +96,7 @@ fun main() {
                                     +"Words"
                                 }
 
-//                                renderWithWordGuesses()
+                                renderWithWordGuesses(renderStringList)
                             }
                         }
                     }
