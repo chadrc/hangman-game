@@ -17,7 +17,7 @@ fun makeGuess() = loadingAction(
     State.makingGuess,
     makeGuessRequest(
         State.gameId.value,
-        State.guessText.value
+        State.guessText.value.trim()
     ),
     resetGuessText
 )
