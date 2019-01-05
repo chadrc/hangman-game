@@ -23,4 +23,10 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
-sourceSets.main.java.srcDirs 'src'
+// Each script will be contained in a sub dir in project root instead of a separate package for each
+def list = []
+projectDir.eachDir {
+    list << it
+}
+
+sourceSets.main.java.srcDirs list
