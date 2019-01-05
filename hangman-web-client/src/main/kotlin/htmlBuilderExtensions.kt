@@ -26,8 +26,7 @@ fun CommonAttributeGroupFacade.showIfValidGameId() {
 
 fun CommonAttributeGroupFacade.showIfGameInProgress(render: TagConsumer<HTMLElement>.() -> Unit = {}) {
     bindState(State.gameWon, State.gameForfeit) { _, _ ->
-        console.log("change", State.gameWon.value, State.gameForfeit.value)
-        if (!State.gameInProgess) {
+        if (!State.gameInProgress) {
             classList.add("hidden")
         } else {
             classList.remove("hidden")
@@ -41,19 +40,24 @@ fun CommonAttributeGroupFacade.showIfGameInProgress(render: TagConsumer<HTMLElem
     }
 }
 
-fun CommonAttributeGroupFacade.hideIfGameInProgress(render: TagConsumer<HTMLElement>.() -> Unit = {}) {
+fun CommonAttributeGroupFacade.hideIfGameInProgress(
+    rerender: Boolean = true,
+    render: TagConsumer<HTMLElement>.() -> Unit = {}
+) {
     bindState(State.gameWon, State.gameForfeit) { _, _ ->
-        if (State.gameInProgess) {
+        if (State.gameInProgress) {
             classList.add("hidden")
         } else {
             classList.remove("hidden")
         }
 
-        while (firstChild != null) {
-            removeChild(firstChild as Node)
-        }
+        if (rerender) {
+            while (firstChild != null) {
+                removeChild(firstChild as Node)
+            }
 
-        this.append { render.invoke(this) }
+            this.append { render.invoke(this) }
+        }
     }
 }
 

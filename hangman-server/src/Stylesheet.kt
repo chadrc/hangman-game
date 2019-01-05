@@ -37,8 +37,10 @@ fun CSSBuilder.mainStyles() {
         fontSize = 150.pct
     }
 
-    button {
-
+    rule(".new-game-button") {
+        margin(LinearDimension.auto)
+        display = Display.block
+        marginBottom = 10.px
     }
 
     rule(".hangman-game") {

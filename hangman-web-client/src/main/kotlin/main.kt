@@ -28,13 +28,13 @@ fun main() {
                     }
                 }
 
-                button {
+                button(classes = "new-game-button") {
                     disableIfGettingGame()
-                    hideIfInvalidGameId()
+                    hideIfGameInProgress(rerender = false)
 
                     onClickFunction = { startGame() }
 
-                    +"Start Game"
+                    +"New Game"
                 }
 
                 section("hangman-game") {
@@ -85,8 +85,6 @@ fun main() {
                             } else {
                                 if (won) "Won" else "Lost"
                             }
-
-                            console.log(won, forfeit, text)
 
                             h2 {
                                 +text

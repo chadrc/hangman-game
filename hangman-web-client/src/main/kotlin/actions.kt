@@ -46,8 +46,6 @@ private fun loadingAction(
 private fun updateStateWithGameResponse(gameResponse: GameResponse) {
     localStorage.setItem(gameIdKey, gameResponse.gameId.toString())
 
-    console.log(gameResponse.result)
-
     State.gameId.value = gameResponse.gameId
     State.guesses.value = gameResponse.guesses
     State.gameWon.value = gameResponse.result?.won
