@@ -58,7 +58,7 @@ fun gameToResponse(gameInfo: GameInfo): GameResponse {
     return GameResponse(
         gameInfo.game.id,
         word,
-        guessesToResponse(gameInfo.guesses),
+        guessesToResponse(gameInfo.guesses).toTypedArray(),
         resultToResponse(gameInfo.result)
     )
 }

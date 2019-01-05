@@ -48,7 +48,7 @@ dependencies {
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
 
     // From common module
-    compile("com.chadrc.hangman.common:hangman-common-jvm:0.0.15")
+    compile("com.chadrc.hangman.common:hangman-common-jvm:0.0.16")
 
     testCompile("io.ktor:ktor-server-tests:$ktor_version")
     testCompile("org.junit.platform:junit-platform-commons:1.3.2")
