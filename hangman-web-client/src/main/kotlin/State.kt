@@ -45,4 +45,7 @@ object State {
 
     val characterGuesses: List<String>
         get() = guesses.value.filter { it.length == 1 }
+
+    val gameInProgess: Boolean
+        get() = gameWon.value != null && gameForfeit.value != null
 }

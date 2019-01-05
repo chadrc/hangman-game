@@ -26,6 +26,15 @@ fun CSSBuilder.mainStyles() {
 
     header {
         textAlign = TextAlign.center
+        marginBottom = 20.px
+    }
+
+    h1 {
+        fontSize = 200.pct
+    }
+
+    h2 {
+        fontSize = 150.pct
     }
 
     button {
@@ -55,13 +64,21 @@ fun CSSBuilder.mainStyles() {
         borderBottom(2.px, BorderStyle.solid, Color.black)
     }
 
-    rule(".hangman-guess-form") {
+    rule(".hangman-guess-form, .hangman-game-result") {
         borderTop(2.px, BorderStyle.solid, Color.black)
         paddingTop = 20.px
         marginBottom = 20.px
         display = Display.flex
         justifyContent = JustifyContent.center
         alignItems = Align.center
+    }
+
+    rule(".hangman-guess-form.hidden .hangman-guess-result.hidden") {
+        display = Display.none
+    }
+
+    rule(".hangman-guess-result") {
+
     }
 
     rule(".hangman-guess-form input") {
@@ -118,5 +135,9 @@ fun CSSBuilder.mainStyles() {
         textAlign = TextAlign.center
         width = 50.pct
         display = Display.inlineBlock
+    }
+
+    rule(".hidden") {
+        display = Display.none
     }
 }

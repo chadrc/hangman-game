@@ -55,22 +55,42 @@ fun main() {
                     }
 
                     section("hangman-guess-form") {
-                        input {
-                            placeholder = "Guess"
+                        showIfGameInProgress {
+                            input {
+                                placeholder = "Guess"
 
-                            bindGuessTextValueInput()
+                                bindGuessTextValueInput()
+                            }
+
+                            button {
+                                +"Guess"
+
+                                onClickFunction = { makeGuess() }
+                            }
+
+                            button {
+                                +"Forfeit"
+
+                                onClickFunction = { forfeitGame() }
+                            }
                         }
+                    }
 
-                        button {
-                            +"Guess"
+                    section("hangman-game-result") {
+                        hideIfGameInProgress {
+                            val won = State.gameWon.value
+                            val forfeit = State.gameForfeit.value
+                            val text = if (won == null) {
+                                if (forfeit == true) "Forfeit" else ""
+                            } else {
+                                if (won) "Won" else "Lost"
+                            }
 
-                            onClickFunction = { makeGuess() }
-                        }
+                            console.log(won, forfeit, text)
 
-                        button {
-                            +"Forfeit"
-
-                            onClickFunction = { forfeitGame() }
+                            h2 {
+                                +text
+                            }
                         }
                     }
 

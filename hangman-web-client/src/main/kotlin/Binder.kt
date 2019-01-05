@@ -41,17 +41,19 @@ object Binder {
 }
 
 fun <T> CommonAttributeGroupFacade.bindState(
-    prop: ObservableProp<T>,
+    vararg props: ObservableProp<T>,
     func: BindingFunc<T>
 ) {
-    var currentId: String? = null
-    try {
-        currentId = id
-    } catch (exception: Exception) { }
+    for (prop in props) {
+        var currentId: String? = null
+        try {
+            currentId = id
+        } catch (exception: Exception) { }
 
-    if (currentId == null) {
-        id = "binding-${IdGenerator.id}"
+        if (currentId == null) {
+            id = "binding-${IdGenerator.id}"
+        }
+
+        Binder.registerBinding(id, prop, func)
     }
-
-    Binder.registerBinding(id, prop, func)
 }

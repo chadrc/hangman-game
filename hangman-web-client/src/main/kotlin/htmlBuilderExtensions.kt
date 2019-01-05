@@ -24,6 +24,39 @@ fun CommonAttributeGroupFacade.showIfValidGameId() {
     }
 }
 
+fun CommonAttributeGroupFacade.showIfGameInProgress(render: TagConsumer<HTMLElement>.() -> Unit = {}) {
+    bindState(State.gameWon, State.gameForfeit) { _, _ ->
+        console.log("change", State.gameWon.value, State.gameForfeit.value)
+        if (!State.gameInProgess) {
+            classList.add("hidden")
+        } else {
+            classList.remove("hidden")
+        }
+
+        while (firstChild != null) {
+            removeChild(firstChild as Node)
+        }
+
+        this.append { render.invoke(this) }
+    }
+}
+
+fun CommonAttributeGroupFacade.hideIfGameInProgress(render: TagConsumer<HTMLElement>.() -> Unit = {}) {
+    bindState(State.gameWon, State.gameForfeit) { _, _ ->
+        if (State.gameInProgess) {
+            classList.add("hidden")
+        } else {
+            classList.remove("hidden")
+        }
+
+        while (firstChild != null) {
+            removeChild(firstChild as Node)
+        }
+
+        this.append { render.invoke(this) }
+    }
+}
+
 fun CommonAttributeGroupFacade.renderWithWord(render: TagConsumer<HTMLElement>.(word: String) -> Unit) {
     bindState(State.word) { _, new ->
         while (firstChild != null) {
