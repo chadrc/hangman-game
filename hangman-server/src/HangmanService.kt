@@ -2,8 +2,8 @@ package com.chadrc.hangman
 
 import com.chadrc.hangman.errors.GameAlreadyCompleteError
 import com.chadrc.hangman.errors.GameNotFoundError
-import com.chadrc.hangman.errors.NoWordsAvailableError
 import com.chadrc.hangman.errors.GameWordNotFound
+import com.chadrc.hangman.errors.NoWordsAvailableError
 import models.GameInfo
 import models.Guess
 

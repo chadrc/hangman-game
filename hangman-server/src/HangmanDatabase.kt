@@ -6,21 +6,35 @@ import models.Game
 import models.GameResult
 import models.Guess
 import models.Word
-import java.sql.*
-import javax.sql.DataSource
+import java.sql.Connection
+import java.sql.PreparedStatement
+import java.sql.ResultSet
+import java.sql.Statement
+import java.util.*
+
+fun makeConnectionPool(): HikariDataSource {
+    val host = AppConfig.property("hangman.database.host")
+    val port = AppConfig.property("hangman.database.port")
+    val databaseName = AppConfig.property("hangman.database.databaseName")
+    val username = AppConfig.property("hangman.database.username")
+    val password = AppConfig.property("hangman.database.password")
+    val connectionPoolSize = AppConfig.property("hangman.database.connectionPoolSize")
+
+    val props = Properties()
+    props.setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource")
+    props.setProperty("dataSource.user", username)
+    props.setProperty("dataSource.password", password)
+    props.setProperty("dataSource.databaseName", databaseName)
+    props.setProperty("dataSource.portNumber", port)
+    props.setProperty("dataSource.serverName", host)
+
+    val config = HikariConfig(props)
+    config.maximumPoolSize = connectionPoolSize?.toInt() ?: 10
+    return HikariDataSource(config)
+}
 
 class HangmanDatabase {
-    private val datasource: HikariDataSource
-
-    init {
-        val config = HikariConfig()
-        config.dataSourceClassName = "org.postgresql.ds.PGSimpleDataSource"
-        config.username = "postgres"
-        config.password = "password"
-        config.maximumPoolSize = 10
-
-        datasource = HikariDataSource(config)
-    }
+    private val datasource: HikariDataSource = makeConnectionPool()
 
     private fun <T> withConnection(func: (conn: Connection) -> T): T {
         val conn = datasource.connection

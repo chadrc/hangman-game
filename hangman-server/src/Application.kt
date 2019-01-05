@@ -24,8 +24,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(
-    testing: Boolean = false,
-    service: HangmanService = HangmanService()
+    service: HangmanService =  HangmanService()
 ) {
     install(ContentNegotiation) {
         jackson {

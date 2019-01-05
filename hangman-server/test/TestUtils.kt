@@ -1,23 +1,10 @@
 package com.chadrc.hangman
 
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.Statement
 
 class TestUtils {
-    private val datasource: HikariDataSource
-
-    init {
-        val config = HikariConfig()
-        config.dataSourceClassName = "org.postgresql.ds.PGSimpleDataSource"
-        config.username = "postgres"
-        config.password = "password"
-        config.maximumPoolSize = 5
-
-        datasource = HikariDataSource(config)
-    }
+    private val datasource = makeConnectionPool()
 
     val newConnection: Connection
         get() {
