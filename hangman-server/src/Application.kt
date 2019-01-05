@@ -14,13 +14,10 @@ import io.ktor.jackson.jackson
 import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.webjars.Webjars
 import kotlinx.css.CSSBuilder
 
 fun main(args: Array<String>): Unit = io.ktor.server.cio.EngineMain.main(args)
 
-@KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(
@@ -30,10 +27,6 @@ fun Application.module(
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
         }
-    }
-
-    install(Webjars) {
-        path = "assets" //defaults to /webjars
     }
 
     routing {
