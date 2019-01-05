@@ -13,8 +13,14 @@ repositories {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib"
     compile "org.jetbrains.kotlin:kotlin-script-runtime"
-    compile "com.amazonaws:aws-java-sdk:1.11.478"
+    compile "software.amazon.awssdk:aws-sdk-java:2.2.0"
     compile "com.github.holgerbrandl:kscript-annotations:1.2"
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 sourceSets.main.java.srcDirs 'src'
