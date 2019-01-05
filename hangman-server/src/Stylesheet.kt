@@ -2,6 +2,8 @@ package com.chadrc.hangman
 
 import kotlinx.css.*
 import kotlinx.css.properties.borderBottom
+import kotlinx.css.properties.borderLeft
+import kotlinx.css.properties.borderRight
 import kotlinx.css.properties.borderTop
 
 val main get() = TagSelector("main")
@@ -84,6 +86,11 @@ fun CSSBuilder.mainStyles() {
         flexDirection = FlexDirection.column
     }
 
+    rule(".guesses-header") {
+        borderBottom(2.px, BorderStyle.solid, Color.black)
+        paddingBottom = 10.px
+    }
+
     rule(".guesses-lists") {
         display = Display.flex
         flexDirection = FlexDirection.row
@@ -93,11 +100,23 @@ fun CSSBuilder.mainStyles() {
         width = 50.pct
     }
 
-    rule(".guesses-lists > ul > li") {
+    rule(".guesses-lists > ul:first-child") {
+        borderRight(1.px, BorderStyle.solid, Color.black)
+    }
 
+    rule(".guesses-lists > ul:last-child") {
+        borderLeft(1.px, BorderStyle.solid, Color.black)
     }
 
     rule(".guesses-lists > ul > li:first-child") {
+        width = 100.pct
+        display = Display.block
+        padding(10.px)
+    }
+
+    rule(".guesses-lists > ul > li") {
         textAlign = TextAlign.center
+        width = 50.pct
+        display = Display.inlineBlock
     }
 }
