@@ -13,20 +13,33 @@ fun getGame() {
 
 fun startGame() = loadingAction(State.gettingGame, makeStartGameRequest())
 
-fun makeGuess() =
-    loadingAction(State.makingGuess, makeGuessRequest(State.gameId.value, State.guessText.value))
+fun makeGuess() = loadingAction(
+    State.makingGuess,
+    makeGuessRequest(
+        State.gameId.value,
+        State.guessText.value
+    ),
+    resetGuessText
+)
 
 fun forfeitGame() = loadingAction(State.forfeiting, makeForfeitRequest(State.gameId.value))
+
+val resetGuessText = { updateGuessText("") }
 
 fun updateGuessText(text: String) {
     State.guessText.value = text
 }
 
-private fun loadingAction(loadingSwitch: ObservableProp<Boolean>, requestPromise: Promise<GameResponse>) {
+private fun loadingAction(
+    loadingSwitch: ObservableProp<Boolean>,
+    requestPromise: Promise<GameResponse>,
+    after: () -> Unit = {}
+) {
     loadingSwitch.value = true
     requestPromise.then {
         loadingSwitch.value = false
         updateStateWithGameResponse(it)
+        after()
     }
 }
 
