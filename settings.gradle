@@ -1,7 +1,8 @@
 rootProject.name = "hangman-game"
 
 include(
-    "hangman-server",
-    "hangman-common",
-    "hangman-web-client"
+        "hangman-server",
+        "hangman-common",
+        "hangman-web-client",
+        "scripts"
 )
