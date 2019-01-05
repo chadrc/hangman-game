@@ -225,6 +225,8 @@ class RestRouteTest {
     fun `Make forfeit request on started game`() {
         val game = (hangmanService.startGame() as Ok).result().game
 
+        val word = hangmanDatabase.getWordById(game.wordId)!!
+
         withHangmanTestApplication {
             handleRequest(HttpMethod.Post, "/forfeit") {
                 setBody(mapper.writeValueAsString(ForfeitRequest(game.id)))
@@ -239,6 +241,7 @@ class RestRouteTest {
             assertNotNull(data.guesses)
             assertNotNull(data.result)
             assertNotNull(data.word)
+            assertEquals(word.word, data.word)
         }
     }
 

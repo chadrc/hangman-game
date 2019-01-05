@@ -50,9 +50,14 @@ fun spaceUnfoundLetters(word: String, guesses: List<Guess>): String {
 }
 
 fun gameToResponse(gameInfo: GameInfo): GameResponse {
+    val word = if (gameInfo.isComplete()) {
+        gameInfo.word
+    } else {
+        spaceUnfoundLetters(gameInfo.word, gameInfo.guesses)
+    }
     return GameResponse(
         gameInfo.game.id,
-        spaceUnfoundLetters(gameInfo.word, gameInfo.guesses),
+        word,
         guessesToResponse(gameInfo.guesses),
         resultToResponse(gameInfo.result)
     )
