@@ -16,7 +16,6 @@ val renderStringList: TagConsumer<HTMLElement>.(List<String>) -> Unit = { list -
 }
 
 fun main() {
-    getGame()
     window.addEventListener("load", {
         val body = document.body!!
 
@@ -105,5 +104,7 @@ fun main() {
         }
 
         Binder.bindElements()
+
+        getGame()
     })
 }
