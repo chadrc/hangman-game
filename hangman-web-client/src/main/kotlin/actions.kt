@@ -40,6 +40,8 @@ private fun loadingAction(
         loadingSwitch.value = false
         updateStateWithGameResponse(it)
         after()
+    }. catch {
+        loadingSwitch.value = false
     }
 }
 
