@@ -13,7 +13,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'kotlin'
 apply plugin: 'application'
 
-group = "hangman-server"
+group = "com.chadrc.hangman"
 version = "0.0.1"
 
 mainClassName = "io.ktor.server.cio.EngineMain"
