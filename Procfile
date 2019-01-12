@@ -1,1 +1,1 @@
-web: java -jar hangman-server-0.0.1-all.jar
+web: java -jar hangman-server.jar
