@@ -17,7 +17,7 @@ task copyProcfile(type: Copy) {
 
 task makeArtifact(type: Zip) {
     archiveName = "hangman-app.zip"
-    destinationDir = file("$buildDir/artifact")
+    destinationDir = file("artifact")
 
     from "$buildDir/artifactFiles"
 }
