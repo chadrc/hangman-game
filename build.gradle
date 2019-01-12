@@ -20,6 +20,8 @@ task makeArtifact(type: Zip) {
     destinationDir = file("artifact")
 
     from "$buildDir/artifactFiles"
+
+    group = "application"
 }
 
 copyShadowJar.dependsOn ":hangman-server:shadowJar"
