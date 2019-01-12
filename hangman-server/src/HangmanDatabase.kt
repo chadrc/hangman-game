@@ -6,6 +6,7 @@ import models.Game
 import models.GameResult
 import models.Guess
 import models.Word
+import java.lang.Exception
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -30,7 +31,15 @@ fun makeConnectionPool(): HikariDataSource {
 
     val config = HikariConfig(props)
     config.maximumPoolSize = connectionPoolSize?.toInt() ?: 10
-    return HikariDataSource(config)
+    return try {
+        HikariDataSource(config)
+    } catch (_: Exception) {
+        val h2Config = HikariConfig()
+        h2Config.jdbcUrl = "jdbc:h2:mem:"
+        config.maximumPoolSize = 1
+
+        HikariDataSource(h2Config)
+    }
 }
 
 class HangmanDatabase {
