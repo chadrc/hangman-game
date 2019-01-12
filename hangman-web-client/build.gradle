@@ -28,7 +28,7 @@ dependencies {
     compile "org.jetbrains.kotlinx:kotlinx-html-js:0.6.12"
 //    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.1.0'
 
-    compile "com.chadrc.hangman.common:hangman-common-js:0.0.16"
+    compile "com.chadrc.hangman:hangman-common-js:0.0.16"
 }
 
 compileJava.dependsOn ":hangman-common:publishToMavenLocal"

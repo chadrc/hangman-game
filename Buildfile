@@ -1,1 +1,1 @@
-build: ./gradlew build
+build: ./gradlew publishToMavenLocal && ./gradlew shadowJar
