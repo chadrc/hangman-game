@@ -115,3 +115,5 @@ gradle-app.setting
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+!build/artifact/hangman-app.zip
