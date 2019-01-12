@@ -76,6 +76,3 @@ shadowJar {
         attributes 'Main-Class': "io.ktor.server.cio.EngineMain"
     }
 }
-
-shadowJar.dependsOn ":hangman-common:publishToMavenLocal"
-build.dependsOn ":hangman-common:publishToMavenLocal"

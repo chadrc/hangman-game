@@ -1,2 +1,28 @@
 group = "com.hangman"
 version = "1.0-SNAPSHOT"
+
+task copyShadowJar(type: Copy) {
+    from "hangman-server/build/libs"
+
+    into "$buildDir/artifactFiles"
+
+    rename '(.+)-0.0.1(.+)', '$1$2'
+}
+
+task copyProcfile(type: Copy) {
+    from "Procfile"
+
+    into "$buildDir/artifactFiles"
+}
+
+task makeArtifact(type: Zip) {
+    archiveName = "hangman-app.zip"
+    destinationDir = file("$buildDir/artifact")
+
+    from "$buildDir/artifactFiles"
+}
+
+copyShadowJar.dependsOn ":hangman-server:shadowJar"
+
+makeArtifact.dependsOn copyShadowJar
+makeArtifact.dependsOn copyProcfile
