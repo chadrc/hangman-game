@@ -36,6 +36,7 @@ fun makeConnectionPool(): HikariDataSource {
     } catch (_: Exception) {
         val h2Config = HikariConfig()
         h2Config.jdbcUrl = "jdbc:h2:mem:"
+        h2Config.driverClassName = "org.h2.Driver"
         config.maximumPoolSize = 1
 
         HikariDataSource(h2Config)
