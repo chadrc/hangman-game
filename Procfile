@@ -1,0 +1,1 @@
+web: java -jar hangman-server/build/libs/hangman-server-0.0.1-all.jar
