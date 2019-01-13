@@ -56,6 +56,8 @@ object AppConfig {
             envConfig
         }
 
+        ssmPath += "/*"
+
         ssmConfig = makeSSMConfig(ssmPath)
     }
 
