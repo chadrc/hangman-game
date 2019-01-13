@@ -1,8 +1,5 @@
 package com.chadrc.hangman
 
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
-import com.amazonaws.services.simplesystemsmanagement.model.GetParametersByPathRequest
-import com.amazonaws.services.simplesystemsmanagement.model.GetParametersByPathResult
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import models.Game
@@ -16,32 +13,15 @@ import java.sql.ResultSet
 import java.sql.Statement
 import java.util.*
 
-fun GetParametersByPathResult.getParam(str: String): String? {
-    val hangmanStr = "/hangman/$str"
-    for (item in parameters) {
-        if (item.name == hangmanStr) {
-            return item.value
-        }
-    }
-
-    return null
-}
-
-fun GetParametersByPathResult.getPostgresParam(str: String): String? = getParam("database/postgres/$str")
+fun AppConfig.getPostgresProperty(prop: String): String? =
+    property("hangman.database.postgres.$prop")
 
 fun makeConnectionPool(): HikariDataSource {
-    val ssm = AWSSimpleSystemsManagementClientBuilder.defaultClient()
-
-    val getParametersResponse = ssm.getParametersByPath(GetParametersByPathRequest().apply {
-        path = "/hangman/"
-        recursive = true
-    })
-
-    val host = getParametersResponse.getPostgresParam("endpoint")
-    val port = getParametersResponse.getPostgresParam("port")
-    val databaseName = getParametersResponse.getPostgresParam("databaseName")
-    val username = getParametersResponse.getPostgresParam("user")
-    val password = getParametersResponse.getPostgresParam("password")
+    val host = AppConfig.getPostgresProperty("endpoint")
+    val port = AppConfig.getPostgresProperty("port")
+    val databaseName = AppConfig.getPostgresProperty("databaseName")
+    val username = AppConfig.getPostgresProperty("user")
+    val password = AppConfig.getPostgresProperty("password")
     val connectionPoolSize = AppConfig.property("hangman.database.connectionPoolSize")
 
     val props = Properties()
