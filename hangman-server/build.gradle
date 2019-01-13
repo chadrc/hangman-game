@@ -44,6 +44,8 @@ dependencies {
     compile "io.ktor:ktor-webjars:$ktor_version"
     compile "io.ktor:ktor-jackson:$ktor_version"
 
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-ssm', version: '1.11.482'
+
     compile group: 'com.zaxxer', name: 'HikariCP', version: '3.2.0'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.5'
     compile group: 'com.h2database', name: 'h2', version: '1.4.197'
