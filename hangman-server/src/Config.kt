@@ -36,6 +36,7 @@ fun makeSSMConfig(basePath: String): Config? {
 
         ConfigFactory.parseProperties(properties)
     } catch (exception: Exception) {
+        println("Error creating SSM config: ${exception.message}")
         null
     }
 }
